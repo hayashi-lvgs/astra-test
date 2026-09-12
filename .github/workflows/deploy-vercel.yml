@@ -1,0 +1,31 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Production build check
+        run: npm run build
+
+      - name: Deploy to Vercel
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          npx vercel@latest project add lunev-one --token="$VERCEL_TOKEN" || true
+          npx vercel@latest link --yes --project lunev-one --token="$VERCEL_TOKEN"
+          npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
