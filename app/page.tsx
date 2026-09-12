@@ -44,10 +44,10 @@ export default function Page() {
 
   const interactive = active === "explore";
   const darkNav = active === "sound" || active === "silence" || active === "specs";
-  const canvasHidden = active === "hero" || active === "specs" || active === "purchase";
+  const canvasHidden = active === "specs" || active === "purchase";
 
   return (
-    <main className={`site ${darkNav ? "nav-on-dark" : ""}`}>
+    <main className={`site section-${active} ${darkNav ? "nav-on-dark" : ""}`}>
       <header className="nav-shell">
         <a href="#hero" className="brand-mark" aria-label="LUNEV home">LUNEV</a>
         <nav className="desktop-nav" aria-label="Primary">
