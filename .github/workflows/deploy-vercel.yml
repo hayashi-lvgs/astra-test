@@ -23,6 +23,16 @@ jobs:
       - name: Production build check
         run: npm run build
 
+      - name: Verify Vercel token
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          STATUS=$(curl -sS -o /tmp/vercel-user.json -w "%{http_code}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            https://api.vercel.com/v2/user)
+          echo "Vercel /v2/user HTTP status: $STATUS"
+          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('/tmp/vercel-user.json','utf8')); if(j.user){console.log('Authenticated Vercel user:', j.user.username || j.user.name || j.user.uid);} else {console.log('Vercel auth response:', j.error?.code || 'unknown_error', '-', j.error?.message || 'No user returned');}"
+          test "$STATUS" = "200"
+
       - name: Deploy to Vercel
         if: env.VERCEL_TOKEN != ''
         run: |
