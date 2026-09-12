@@ -17,6 +17,16 @@ jobs:
         with:
           node-version: 22
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build product model
+        run: |
+          python -m pip install --disable-pip-version-check numpy trimesh
+          python scripts/build_model.py
+          ls -lh public/models/lunev-one.glb
+
       - name: Install dependencies
         run: npm install
 
@@ -48,11 +58,10 @@ jobs:
         run: |
           mkdir -p qa/fv
           CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          echo "Chrome: $CHROME"
           curl --retry 8 --retry-delay 2 --retry-all-errors --fail --silent --show-error https://lunev-one.vercel.app/ > /dev/null
           COMMON_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader --enable-unsafe-swiftshader --disable-gpu-sandbox"
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=12000 --screenshot=qa/fv/fv-desktop-1440.png https://lunev-one.vercel.app/
-          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=12000 --screenshot=qa/fv/fv-mobile-390.png https://lunev-one.vercel.app/
+          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/fv/fv-desktop-1440.png https://lunev-one.vercel.app/
+          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/fv/fv-mobile-390.png https://lunev-one.vercel.app/
           file qa/fv/*.png
 
       - name: Upload FV screenshots
