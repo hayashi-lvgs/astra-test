@@ -43,3 +43,21 @@ jobs:
       - name: Deploy to Vercel
         if: env.VERCEL_TOKEN != ''
         run: npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Capture FV screenshots
+        run: |
+          mkdir -p qa/fv
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          echo "Chrome: $CHROME"
+          curl --retry 8 --retry-delay 2 --retry-all-errors --fail --silent --show-error https://lunev-one.vercel.app/ > /dev/null
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --use-gl=swiftshader --enable-webgl --window-size=1440,1000 --virtual-time-budget=10000 --screenshot=qa/fv/fv-desktop-1440.png https://lunev-one.vercel.app/
+          "$CHROME" --headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --use-gl=swiftshader --enable-webgl --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=10000 --screenshot=qa/fv/fv-mobile-390.png https://lunev-one.vercel.app/
+          file qa/fv/*.png
+
+      - name: Upload FV screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunev-fv-screenshots
+          path: qa/fv/*.png
+          if-no-files-found: error
+          retention-days: 14
