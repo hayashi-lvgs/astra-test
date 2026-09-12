@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { FINISHES, ProductScene, type Finish, type Section } from "../components/ProductScene";
+import { HERO_IMAGE } from "../lib/heroImage";
 
 const sections: Section[] = ["hero", "sound", "silence", "material", "longevity", "explore", "customize", "specs", "purchase"];
 
@@ -44,10 +45,49 @@ export default function Page() {
 
   const interactive = active === "explore";
   const darkNav = active === "sound" || active === "silence" || active === "specs";
-  const canvasHidden = active === "specs" || active === "purchase";
+  const canvasHidden = active === "hero" || active === "specs" || active === "purchase";
 
   return (
     <main className={`site section-${active} ${darkNav ? "nav-on-dark" : ""}`}>
+      <style>{`
+        .hero-section{min-height:100svh;overflow:hidden;background:#eee8df!important;isolation:isolate}
+        .hero-section:before{display:none!important}
+        .hero-section:after{content:"";position:absolute;inset:0;z-index:6;background:linear-gradient(90deg,rgba(239,233,225,.98) 0%,rgba(239,233,225,.92) 28%,rgba(239,233,225,.24) 49%,rgba(239,233,225,0) 66%),linear-gradient(180deg,rgba(255,255,255,.16),rgba(58,46,35,.04));pointer-events:none}
+        .hero-visual{position:absolute!important;display:block!important;z-index:3!important;inset:0 0 0 auto!important;width:71%!important;height:100%!important;border:0!important;background-repeat:no-repeat!important;background-size:cover!important;background-position:center center!important;filter:saturate(.86) contrast(1.02)}
+        .hero-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(238,232,224,.42),transparent 23%),linear-gradient(180deg,transparent 70%,rgba(51,39,29,.08))}
+        .hero-copy{z-index:15!important;width:min(540px,42vw)!important;margin-top:4vh!important}
+        .hero-copy h1{font-size:clamp(78px,7.4vw,122px)!important;line-height:.86!important;font-weight:360!important;letter-spacing:-.075em!important}
+        .hero-summary{max-width:31ch!important;color:rgba(24,22,20,.62)!important}
+        .hero-actions{margin-top:38px!important}
+        .hero-price{font-variant-numeric:tabular-nums}
+        .hero-meta,.scroll-cue{z-index:15!important}
+        .hero-meta{right:4vw!important;color:#f4eee8!important;opacity:.76!important;text-shadow:0 1px 18px rgba(0,0,0,.18)}
+        .nav-shell{mix-blend-mode:normal}
+        .story-copy,.explore-copy,.customize-panel,.specs-heading,.purchase-copy,.purchase-card{transition:transform .5s ease,opacity .5s ease}
+        .metric-rail strong{font-weight:360!important}
+        .material-chips span{backdrop-filter:blur(8px)}
+        .purchase-card{box-shadow:0 30px 90px rgba(51,42,32,.08)}
+        @media(max-width:900px){
+          .hero-section{padding-top:14vh!important;padding-left:22px!important;padding-right:22px!important;min-height:112svh!important;background:linear-gradient(180deg,#efe9e2 0%,#ebe4db 48%,#d3c6b8 100%)!important}
+          .hero-section:after{z-index:6;background:linear-gradient(180deg,rgba(239,233,225,.99) 0%,rgba(239,233,225,.93) 38%,rgba(239,233,225,.42) 53%,rgba(239,233,225,0) 68%)}
+          .hero-visual{top:auto!important;bottom:0!important;left:0!important;width:100%!important;height:61%!important;background-size:cover!important;background-position:58% 48%!important;filter:saturate(.84) contrast(1.02)}
+          .hero-visual:after{background:linear-gradient(180deg,rgba(238,232,224,.7),transparent 18%,transparent 82%,rgba(50,38,28,.08))}
+          .hero-copy{width:100%!important;max-width:530px!important;margin-top:0!important}
+          .hero-copy h1{font-size:clamp(62px,15vw,94px)!important;line-height:.87!important;max-width:7ch!important}
+          .hero-summary{max-width:29ch!important;margin-top:21px!important;font-size:15px!important;line-height:1.48!important}
+          .hero-actions{margin-top:24px!important;gap:12px!important}
+          .hero-meta{display:none!important}
+          .scroll-cue{bottom:18px!important;color:#f5eee7!important;opacity:.82!important;text-shadow:0 1px 14px rgba(0,0,0,.2)}
+        }
+        @media(max-width:560px){
+          .hero-section{min-height:108svh!important}
+          .hero-visual{height:56%!important;background-position:60% 50%!important}
+          .hero-copy h1{font-size:14.8vw!important}
+          .hero-summary{font-size:14.5px!important}
+          .primary-link{font-size:10px}
+        }
+      `}</style>
+
       <header className="nav-shell">
         <a href="#hero" className="brand-mark" aria-label="LUNEV home">LUNEV</a>
         <nav className="desktop-nav" aria-label="Primary">
@@ -74,7 +114,7 @@ export default function Page() {
       </div>
 
       <section id="hero" data-section="hero" className="story hero-section">
-        <div className="hero-visual" aria-hidden="true" />
+        <div className="hero-visual" style={{ backgroundImage: `url(${HERO_IMAGE})` }} aria-hidden="true" />
         <div className="hero-copy">
           <p className="kicker">LUNEV ONE / Wireless ANC Headphones</p>
           <h1>Silence,<br />made tangible.</h1>
