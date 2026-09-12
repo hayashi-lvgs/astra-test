@@ -43,7 +43,8 @@ export default function Page() {
   }, []);
 
   const interactive = active === "explore";
-  const darkNav = active === "sound" || active === "silence";
+  const darkNav = active === "sound" || active === "silence" || active === "specs";
+  const canvasHidden = active === "hero" || active === "specs" || active === "purchase";
 
   return (
     <main className={`site ${darkNav ? "nav-on-dark" : ""}`}>
@@ -61,35 +62,45 @@ export default function Page() {
 
       {menuOpen && (
         <div className="mobile-menu">
+          <button className="menu-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">Close</button>
           {[["Product", "#sound"], ["Explore", "#explore"], ["Specifications", "#specs"], ["Configure", "#purchase"]].map(([label, href]) => (
             <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>
           ))}
         </div>
       )}
 
-      <div className={`product-canvas ${interactive ? "is-interactive" : ""}`} aria-hidden="true">
+      <div className={`product-canvas ${interactive ? "is-interactive" : ""} ${canvasHidden ? "is-hidden" : ""}`} aria-hidden="true">
         <ProductScene finish={finish} section={active} progress={progress} interactive={interactive} />
       </div>
 
       <section id="hero" data-section="hero" className="story hero-section">
+        <div className="hero-visual" aria-hidden="true" />
         <div className="hero-copy">
           <p className="kicker">LUNEV ONE / Wireless ANC Headphones</p>
           <h1>Silence,<br />made tangible.</h1>
           <p className="hero-summary">A premium listening object designed around material clarity, physical control and long-term ownership.</p>
           <div className="hero-actions">
-            <a className="primary-link" href="#explore">Explore the product</a>
-            <span>¥148,000</span>
+            <a className="primary-link" href="#sound">Explore the product <span>↘</span></a>
+            <span className="hero-price">¥148,000</span>
           </div>
         </div>
-        <div className="hero-index"><span>01</span><span>Premium Audio Object</span></div>
+        <div className="hero-meta">
+          <span>Graphite</span>
+          <span>320 g</span>
+          <span>40 h battery</span>
+        </div>
+        <div className="scroll-cue"><i />Scroll to discover</div>
       </section>
 
-      <section id="sound" data-section="sound" className="story dark-section">
+      <section id="sound" data-section="sound" className="story dark-section sound-section">
         <div className="story-copy left-copy">
           <p className="kicker light">01 / Sound</p>
           <h2>Hear the detail,<br />not the hardware.</h2>
           <p>40 mm custom dynamic drivers are presented as part of the physical product architecture—not hidden behind marketing imagery.</p>
-          <div className="spec-pair"><span>40 mm</span><small>Custom dynamic driver</small></div>
+          <div className="metric-rail">
+            <div><strong>40 mm</strong><span>Custom dynamic driver</span></div>
+            <div><strong>24 bit</strong><span>High-resolution playback</span></div>
+          </div>
         </div>
       </section>
 
@@ -98,17 +109,24 @@ export default function Page() {
           <p className="kicker light">02 / Silence</p>
           <h2>Control the space<br />around you.</h2>
           <p>Adaptive ANC is expressed as a quieter visual field, turning an invisible feature into something users can understand at a glance.</p>
-          <div className="spec-pair"><span>Adaptive</span><small>Noise cancelling</small></div>
+          <div className="metric-rail single">
+            <div><strong>Adaptive</strong><span>Noise cancelling + transparency</span></div>
+          </div>
         </div>
       </section>
 
       <section id="material" data-section="material" className="story material-section">
+        <div className="material-backdrop" aria-hidden="true" />
         <div className="story-copy left-copy compact-copy">
           <p className="kicker">03 / Material</p>
           <h2>Made to be touched.</h2>
           <p>Machined aluminium, soft cushioning and deliberate physical controls create a product that feels considered before it is even worn.</p>
+          <div className="material-chips">
+            <span>Bead-blasted aluminium</span>
+            <span>Soft-touch cushion</span>
+            <span>Knurled dial</span>
+          </div>
         </div>
-        <div className="material-note"><span>Bead-blasted aluminium</span><span>Soft-touch cushion</span><span>Knurled control dial</span></div>
       </section>
 
       <section id="longevity" data-section="longevity" className="story longevity-section">
@@ -155,8 +173,8 @@ export default function Page() {
 
       <section id="specs" data-section="specs" className="specs-section">
         <div className="specs-heading">
-          <p className="kicker">07 / Specifications</p>
-          <h2>Engineered with restraint.</h2>
+          <p className="kicker light">07 / Specifications</p>
+          <h2>Engineered<br />with restraint.</h2>
           <p>Only the details that matter to everyday use, ownership and product understanding.</p>
         </div>
         <dl className="spec-grid">
