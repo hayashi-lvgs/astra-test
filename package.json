@@ -1,0 +1,35 @@
+{
+  "name": "lunev-one-site",
+  "version": "0.4.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "model:validate": "node scripts/validate-model.mjs",
+    "budget:check": "node scripts/check-budget.mjs",
+    "source:verify": "node scripts/verify-source.mjs",
+    "model:build": "python3 scripts/build_model.py",
+    "preflight": "npm run source:verify && npm run model:validate && npm run budget:check",
+    "release:check": "npm run preflight && npm run typecheck && npm run build"
+  },
+  "dependencies": {
+    "@react-three/drei": "10.7.8",
+    "@react-three/fiber": "9.7.0",
+    "next": "16.3.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.186.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  }
+}
