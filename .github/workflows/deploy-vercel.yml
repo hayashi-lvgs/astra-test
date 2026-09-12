@@ -33,9 +33,13 @@ jobs:
           node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('/tmp/vercel-user.json','utf8')); if(j.user){console.log('Authenticated Vercel user:', j.user.username || j.user.name || j.user.uid);} else {console.log('Vercel auth response:', j.error?.code || 'unknown_error', '-', j.error?.message || 'No user returned');}"
           test "$STATUS" = "200"
 
-      - name: Deploy to Vercel
+      - name: Configure Vercel project
         if: env.VERCEL_TOKEN != ''
         run: |
           npx vercel@latest project add lunev-one --token="$VERCEL_TOKEN" || true
           npx vercel@latest link --yes --project lunev-one --token="$VERCEL_TOKEN"
-          npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+          npx vercel@latest project update lunev-one --framework nextjs --auto-detect output-directory --token="$VERCEL_TOKEN"
+
+      - name: Deploy to Vercel
+        if: env.VERCEL_TOKEN != ''
+        run: npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
