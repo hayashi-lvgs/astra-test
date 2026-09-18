@@ -15,7 +15,7 @@ export const FINISHES: Record<Finish, { label: string; metal: string; cushion: s
 };
 
 const cameraStates: Record<Section, { position: [number, number, number]; target: [number, number, number]; fov: number }> = {
-  hero: { position: [0.35, 0.55, 5.25], target: [0.05, 0.60, 0], fov: 34 },
+  hero: { position: [0.48, 0.62, 6.55], target: [0.10, 0.62, 0], fov: 35 },
   sound: { position: [1.75, 0.28, 4.35], target: [0.5, 0.05, 0], fov: 31 },
   silence: { position: [-1.7, 0.62, 5.05], target: [-0.22, 0.48, 0], fov: 34 },
   material: { position: [2.25, 0.42, 3.95], target: [0.60, 0.22, 0], fov: 28 },
@@ -36,9 +36,9 @@ function CameraRig({ section, interactive }: { section: Section; interactive: bo
     const mobile = size.width < 760;
     const p = new THREE.Vector3(...state.position);
     if (mobile) {
-      p.x *= 0.2;
-      p.y += 0.10;
-      p.z += 1.15;
+      p.x *= 0.12;
+      p.y += 0.12;
+      p.z += 1.40;
     }
     const t = new THREE.Vector3(...state.target);
     const k = 1 - Math.exp(-3.6 * delta);
@@ -165,10 +165,10 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
     });
 
     if (root.current) {
-      let ry = -0.48;
+      let ry = -0.64;
       let rx = -0.045;
       let rz = 0.012;
-      if (section === "hero") ry += Math.sin(state.clock.elapsedTime * 0.24) * 0.018;
+      if (section === "hero") ry += Math.sin(state.clock.elapsedTime * 0.24) * 0.014;
       if (section === "sound") { ry = -0.72; rx = -0.025; }
       if (section === "silence") ry = 0.16;
       if (section === "material") { ry = -0.92; rx = 0.015; }
@@ -210,14 +210,14 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
   });
 
   return (
-    <group ref={root} scale={0.88} position={[0, -0.15, 0]} rotation={[-0.045, -0.48, 0.012]}>
+    <group ref={root} scale={0.80} position={[0, -0.10, 0]} rotation={[-0.045, -0.64, 0.012]}>
       <primitive object={model} />
     </group>
   );
 }
 
 function SceneContent({ finish, section, progress, interactive }: { finish: Finish; section: Section; progress: number; interactive: boolean }) {
-  const pedestal = section === "hero" || section === "material" || section === "explore" || section === "customize";
+  const pedestal = section === "material" || section === "explore" || section === "customize";
 
   return (
     <>
@@ -258,7 +258,7 @@ export function ProductScene({ finish, section, progress, interactive }: { finis
   return (
     <Canvas
       shadows
-      camera={{ position: [0.35, 0.55, 5.25], fov: 34, near: 0.1, far: 100 }}
+      camera={{ position: [0.48, 0.62, 6.55], fov: 35, near: 0.1, far: 100 }}
       dpr={[1, 1.8]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
