@@ -199,19 +199,19 @@ def build_cup_parts(scene, side: str, x: float, rot_y: float):
     add(scene, cushion, f"Cushion_{side}", (x, -.20, cushion_z), (0, rot_y, 0))
 
     # Inner acoustic surface / driver.
-    inner = loft([(-.025, .67, .89, 4.4), (0, .71, .93, 4.7), (.025, .67, .89, 4.4)], DARK)
-    add(scene, inner, f"Acoustic_Baffle_{side}", (x, -.20, .31 if side == "L" else -.31), (0, rot_y, 0))
+    inner = loft([(-.018, .55, .75, 4.4), (0, .59, .79, 4.7), (.018, .55, .75, 4.4)], DARK)
+    add(scene, inner, f"Acoustic_Baffle_{side}", (x, -.20, .245 if side == "L" else -.245), (0, rot_y, 0))
 
-    drv = cyl(.305, .052, DRIVER, 80)
+    drv = cyl(.245, .042, DRIVER, 80)
     drv.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, [1, 0, 0]))
     add(scene, drv, f"Driver_{side}", (x, -.20, .345 if side == "L" else -.345), (0, rot_y, 0))
 
-    ring = cyl(.35, .022, ACCENT, 80)
+    ring = cyl(.285, .018, ACCENT, 80)
     ring.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, [1, 0, 0]))
     add(scene, ring, f"Driver_Ring_{side}", (x, -.20, .327 if side == "L" else -.327), (0, rot_y, 0))
 
     # Precision hinge plate.
-    hinge = cyl(.12, .085, EDGE, 64)
+    hinge = cyl(.082, .072, EDGE, 64)
     hinge.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, [0, 1, 0]))
     add(scene, hinge, f"Hinge_{side}", (x + sign * .61, .27, .04), (0, 0, 0))
 
@@ -239,7 +239,7 @@ def build_cup_parts(scene, side: str, x: float, rot_y: float):
 
 def add_controls(scene):
     # Knurled crown.
-    crown = cyl(.145, .105, EDGE, 80)
+    crown = cyl(.105, .082, EDGE, 80)
     crown.apply_transform(trimesh.transformations.rotation_matrix(math.pi / 2, [0, 1, 0]))
     add(scene, crown, "Control_Dial", (1.46, -.06, .17))
     for i in range(28):
