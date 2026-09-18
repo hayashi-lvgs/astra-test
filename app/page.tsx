@@ -44,46 +44,54 @@ export default function Page() {
 
   const interactive = active === "explore";
   const darkNav = active === "sound" || active === "silence" || active === "specs";
-  const canvasHidden = active === "hero" || active === "specs" || active === "purchase";
+  const canvasHidden = active === "specs" || active === "purchase";
 
   return (
     <main className={`site section-${active} ${darkNav ? "nav-on-dark" : ""}`}>
       <style>{`
-        .hero-section{min-height:100svh;overflow:hidden;background:#eee8df!important;isolation:isolate}
-        .hero-section:before{display:none!important}
-        .hero-section:after{content:"";position:absolute;inset:0;z-index:6;background:linear-gradient(90deg,rgba(239,233,225,.98) 0%,rgba(239,233,225,.92) 28%,rgba(239,233,225,.24) 49%,rgba(239,233,225,0) 66%),linear-gradient(180deg,rgba(255,255,255,.16),rgba(58,46,35,.04));pointer-events:none}
-        .hero-visual{position:absolute!important;display:block!important;z-index:3!important;inset:0 0 0 auto!important;width:71%!important;height:100%!important;border:0!important;background-repeat:no-repeat!important;background-size:cover!important;background-position:center center!important;filter:saturate(.86) contrast(1.02)}
-        .hero-visual:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(238,232,224,.42),transparent 23%),linear-gradient(180deg,transparent 70%,rgba(51,39,29,.08))}
-        .hero-copy{z-index:15!important;width:min(540px,42vw)!important;margin-right:auto!important;margin-top:4vh!important}
-        .hero-copy h1{font-size:clamp(78px,7.4vw,122px)!important;line-height:.86!important;font-weight:360!important;letter-spacing:-.075em!important}
-        .hero-summary{max-width:31ch!important;color:rgba(24,22,20,.62)!important}
+        .hero-section{min-height:100svh;overflow:hidden;background:
+          radial-gradient(circle at 74% 23%,rgba(255,255,255,.90),rgba(255,255,255,0) 28%),
+          radial-gradient(circle at 88% 68%,rgba(173,146,119,.24),rgba(173,146,119,0) 32%),
+          linear-gradient(116deg,#f3eee7 0%,#ece4da 42%,#d8cabe 72%,#c6b4a2 100%)!important;isolation:isolate}
+        .hero-section:before{content:"";position:absolute;z-index:2;right:-4vw;bottom:-7vh;width:61vw;height:34vh;background:linear-gradient(180deg,#ddd1c5,#bba994);clip-path:polygon(10% 4%,100% 0,100% 100%,0 100%);box-shadow:0 -1px 0 rgba(255,255,255,.52),0 -30px 80px rgba(83,62,44,.06)}
+        .hero-section:after{content:"";position:absolute;inset:0;z-index:4;background:
+          linear-gradient(90deg,rgba(242,237,230,.97) 0%,rgba(242,237,230,.83) 28%,rgba(242,237,230,.22) 47%,rgba(242,237,230,0) 63%),
+          linear-gradient(180deg,rgba(255,255,255,.12),rgba(35,28,22,.03));pointer-events:none}
+        .hero-visual{position:absolute!important;display:block!important;z-index:3!important;right:0!important;top:0!important;width:55%!important;height:100%!important;border-left:1px solid rgba(255,255,255,.2)!important;background:
+          linear-gradient(112deg,rgba(255,255,255,.12),transparent 38%),
+          radial-gradient(circle at 58% 28%,rgba(255,255,255,.28),transparent 29%)!important;pointer-events:none}
+        .hero-copy{z-index:30!important;width:min(520px,40vw)!important;margin-top:3vh!important}
+        .hero-copy h1{font-size:clamp(76px,7vw,116px)!important;line-height:.86!important;font-weight:360!important;letter-spacing:-.075em!important}
+        .hero-summary{max-width:30ch!important;color:rgba(24,22,20,.62)!important}
         .hero-actions{margin-top:38px!important}
-        .hero-price{font-variant-numeric:tabular-nums}
-        .hero-meta,.scroll-cue{z-index:15!important}
-        .hero-meta{right:4vw!important;color:#f4eee8!important;opacity:.76!important;text-shadow:0 1px 18px rgba(0,0,0,.18)}
-        .nav-shell{mix-blend-mode:normal}
-        .story-copy,.explore-copy,.customize-panel,.specs-heading,.purchase-copy,.purchase-card{transition:transform .5s ease,opacity .5s ease}
+        .hero-meta,.scroll-cue{z-index:30!important}
+        .hero-meta{right:5vw!important;color:#2b2723!important;opacity:.52!important}
+        .section-hero .product-canvas{transform:translate3d(24vw,2vh,0) scale(1.13)!important}
+        .product-canvas{transition:opacity .5s ease,transform .8s cubic-bezier(.2,.7,.2,1)!important}
         .metric-rail strong{font-weight:360!important}
-        .material-chips span{backdrop-filter:blur(8px)}
         .purchase-card{box-shadow:0 30px 90px rgba(51,42,32,.08)}
         @media(max-width:900px){
-          .hero-section{padding-top:14vh!important;padding-left:22px!important;padding-right:22px!important;min-height:112svh!important;background:linear-gradient(180deg,#efe9e2 0%,#ebe4db 48%,#d3c6b8 100%)!important}
-          .hero-section:after{z-index:6;background:linear-gradient(180deg,rgba(239,233,225,.99) 0%,rgba(239,233,225,.93) 38%,rgba(239,233,225,.42) 53%,rgba(239,233,225,0) 68%)}
-          .hero-visual{top:auto!important;bottom:0!important;left:0!important;width:100%!important;height:61%!important;background-size:cover!important;background-position:58% 48%!important;filter:saturate(.84) contrast(1.02)}
-          .hero-visual:after{background:linear-gradient(180deg,rgba(238,232,224,.7),transparent 18%,transparent 82%,rgba(50,38,28,.08))}
-          .hero-copy{width:100%!important;max-width:530px!important;margin:0!important}
-          .hero-copy h1{font-size:clamp(62px,15vw,94px)!important;line-height:.87!important;max-width:7ch!important}
-          .hero-summary{max-width:29ch!important;margin-top:21px!important;font-size:15px!important;line-height:1.48!important}
-          .hero-actions{margin-top:24px!important;gap:12px!important}
+          .hero-section{display:block!important;padding-top:15vh!important;padding-left:22px!important;padding-right:22px!important;min-height:110svh!important;background:
+            radial-gradient(circle at 70% 62%,rgba(255,255,255,.55),transparent 25%),
+            linear-gradient(180deg,#f2ede6 0%,#e7ded4 53%,#cdbdad 100%)!important}
+          .hero-section:before{right:-24vw!important;bottom:-2vh!important;width:125vw!important;height:27vh!important;clip-path:polygon(18% 4%,100% 0,100% 100%,0 100%)!important}
+          .hero-section:after{background:linear-gradient(180deg,rgba(242,237,230,.98) 0%,rgba(242,237,230,.9) 37%,rgba(242,237,230,.28) 55%,rgba(242,237,230,0) 70%)!important}
+          .hero-visual{display:none!important}
+          .hero-copy{width:100%!important;max-width:520px!important;margin:0!important}
+          .hero-copy h1{font-size:clamp(62px,15vw,92px)!important;max-width:7ch!important}
+          .hero-summary{font-size:15px!important;max-width:28ch!important;margin-top:21px!important}
+          .hero-actions{margin-top:23px!important;gap:12px!important}
           .hero-meta{display:none!important}
-          .scroll-cue{bottom:18px!important;color:#f5eee7!important;opacity:.82!important;text-shadow:0 1px 14px rgba(0,0,0,.2)}
+          .scroll-cue{bottom:18px!important;color:#2c2723!important;opacity:.48!important}
+          .product-canvas{top:3vh!important;height:76vh!important}
+          .section-hero .product-canvas{transform:translate3d(0,28vh,0) scale(.96)!important}
         }
         @media(max-width:560px){
           .hero-section{min-height:108svh!important}
-          .hero-visual{height:56%!important;background-position:60% 50%!important}
           .hero-copy h1{font-size:14.8vw!important}
           .hero-summary{font-size:14.5px!important}
-          .primary-link{font-size:10px}
+          .product-canvas{height:70vh!important}
+          .section-hero .product-canvas{transform:translate3d(0,29vh,0) scale(.92)!important}
         }
       `}</style>
 
@@ -113,7 +121,7 @@ export default function Page() {
       </div>
 
       <section id="hero" data-section="hero" className="story hero-section">
-        <div className="hero-visual" style={{ backgroundImage: "url(/hero-image)" }} aria-hidden="true" />
+        <div className="hero-visual" aria-hidden="true" />
         <div className="hero-copy">
           <p className="kicker">LUNEV ONE / Wireless ANC Headphones</p>
           <h1>Silence,<br />made tangible.</h1>
