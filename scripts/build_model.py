@@ -73,7 +73,7 @@ def loft(layers, material, cap=True):
     return apply_material(mesh, material)
 
 
-def ring_loft(layers, inner_ratio=(.55, .64), material=SOFT):
+def ring_loft(layers, inner_ratio=(.60, .68), material=SOFT):
     """Bulged cushion ring with continuous outer/inner surfaces."""
     n = 96
     verts = []
@@ -172,12 +172,12 @@ def build_cup_parts(scene, side: str, x: float, rot_y: float):
     cup_z = .03 if side == "L" else -.03
 
     shell = loft([
-        (-.24, 1.13, 1.44, 4.5),
-        (-.19, 1.23, 1.55, 4.8),
-        (-.03, 1.28, 1.60, 5.0),
-        (.12, 1.27, 1.59, 5.0),
-        (.19, 1.20, 1.51, 4.7),
-        (.225, 1.10, 1.41, 4.5),
+        (-.22, 1.06, 1.40, 4.5),
+        (-.17, 1.15, 1.49, 4.8),
+        (-.03, 1.19, 1.53, 5.0),
+        (.10, 1.18, 1.52, 5.0),
+        (.17, 1.13, 1.46, 4.7),
+        (.21, 1.04, 1.38, 4.5),
     ], ALUMINUM)
     add(scene, shell, f"EarCup_{side}", (x, -.20, cup_z), (0, rot_y, sign * .015))
 
@@ -189,13 +189,13 @@ def build_cup_parts(scene, side: str, x: float, rot_y: float):
     add(scene, rim, f"Cup_Rim_{side}", (x, -.20, .258 if side == "L" else .196), (0, rot_y, 0))
 
     cushion = ring_loft([
-        (-.18, 1.18, 1.49, 4.6),
-        (-.10, 1.25, 1.57, 4.8),
-        (0.0, 1.29, 1.61, 4.9),
-        (.10, 1.25, 1.57, 4.8),
-        (.18, 1.18, 1.49, 4.6),
+        (-.14, 1.08, 1.42, 4.6),
+        (-.08, 1.14, 1.49, 4.8),
+        (0.0, 1.17, 1.52, 4.9),
+        (.08, 1.14, 1.49, 4.8),
+        (.14, 1.08, 1.42, 4.6),
     ])
-    cushion_z = .41 if side == "L" else -.41
+    cushion_z = .36 if side == "L" else -.36
     add(scene, cushion, f"Cushion_{side}", (x, -.20, cushion_z), (0, rot_y, 0))
 
     # Inner acoustic surface / driver.
@@ -257,8 +257,8 @@ def main():
     scene = trimesh.Scene()
 
     # Slight asymmetric splay reads more naturally in a hero three-quarter view.
-    build_cup_parts(scene, "L", -.76, .17)
-    build_cup_parts(scene, "R", .76, -.10)
+    build_cup_parts(scene, "L", -.69, .28)
+    build_cup_parts(scene, "R", .74, -.16)
 
     # Outer spring band + softer inner contact band.
     shell = tube_arc(1.30, 1.35, .90, .205, .255, material=EDGE)
