@@ -145,6 +145,9 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
     const a = 1 - Math.exp(-delta * 5);
     model.traverse((obj) => {
       if (!(obj instanceof THREE.Mesh)) return;
+      if (obj.name.includes("Driver_") || obj.name.includes("Driver_Ring_")) {
+        obj.visible = section === "sound";
+      }
       const m = obj.material as THREE.MeshStandardMaterial;
       if (obj.name.includes("Cushion") || obj.name.includes("Headband_Cushion")) {
         m.color.lerp(targetSoft, a);
@@ -165,7 +168,7 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
     });
 
     if (root.current) {
-      let ry = -0.64;
+      let ry = -0.72;
       let rx = -0.045;
       let rz = 0.012;
       if (section === "hero") ry += Math.sin(state.clock.elapsedTime * 0.24) * 0.014;
@@ -210,7 +213,7 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
   });
 
   return (
-    <group ref={root} scale={0.80} position={[0, -0.10, 0]} rotation={[-0.045, -0.64, 0.012]}>
+    <group ref={root} scale={0.80} position={[0, -0.10, 0]} rotation={[-0.035, -0.72, 0.018]}>
       <primitive object={model} />
     </group>
   );
