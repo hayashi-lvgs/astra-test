@@ -66,7 +66,7 @@ export default function Page() {
         .hero-actions{margin-top:38px!important}
         .hero-meta,.scroll-cue{z-index:30!important}
         .hero-meta{right:5vw!important;color:#2b2723!important;opacity:.52!important}
-        .section-hero .product-canvas{transform:translate3d(24vw,2vh,0) scale(1.13)!important}
+        .section-hero .product-canvas{transform:translate3d(24vw,3vh,0) scale(.94)!important}
         .product-canvas{transition:opacity .5s ease,transform .8s cubic-bezier(.2,.7,.2,1)!important}
         .metric-rail strong{font-weight:360!important}
         .purchase-card{box-shadow:0 30px 90px rgba(51,42,32,.08)}
@@ -84,14 +84,14 @@ export default function Page() {
           .hero-meta{display:none!important}
           .scroll-cue{bottom:18px!important;color:#2c2723!important;opacity:.48!important}
           .product-canvas{top:3vh!important;height:76vh!important}
-          .section-hero .product-canvas{transform:translate3d(0,28vh,0) scale(.96)!important}
+          .section-hero .product-canvas{transform:translate3d(0,30vh,0) scale(.84)!important}
         }
         @media(max-width:560px){
           .hero-section{min-height:108svh!important}
           .hero-copy h1{font-size:14.8vw!important}
           .hero-summary{font-size:14.5px!important}
           .product-canvas{height:70vh!important}
-          .section-hero .product-canvas{transform:translate3d(0,29vh,0) scale(.92)!important}
+          .section-hero .product-canvas{transform:translate3d(0,31vh,0) scale(.80)!important}
         }
       `}</style>
 
