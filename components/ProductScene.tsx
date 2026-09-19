@@ -10,12 +10,12 @@ export type Section = "hero" | "sound" | "silence" | "material" | "longevity" | 
 
 export const FINISHES: Record<Finish, { label: string; metal: string; cushion: string; trim: string }> = {
   graphite: { label: "Graphite", metal: "#4f4a45", cushion: "#171513", trim: "#b8afa4" },
-  natural: { label: "Natural", metal: "#c7beb3", cushion: "#d9d1c7", trim: "#eee8df" },
+  natural: { label: "Natural", metal: "#9d9489", cushion: "#b8afa5", trim: "#cfc4b8" },
   warm: { label: "Warm Stone", metal: "#a9937d", cushion: "#67584e", trim: "#d7c4af" },
 };
 
 const cameraStates: Record<Section, { position: [number, number, number]; target: [number, number, number]; fov: number }> = {
-  hero: { position: [0.48, 0.62, 6.55], target: [0.10, 0.62, 0], fov: 35 },
+  hero: { position: [0.18, 0.60, 5.95], target: [0.04, 0.58, 0], fov: 34 },
   sound: { position: [1.75, 0.28, 4.35], target: [0.5, 0.05, 0], fov: 31 },
   silence: { position: [-1.7, 0.62, 5.05], target: [-0.22, 0.48, 0], fov: 34 },
   material: { position: [2.25, 0.42, 3.95], target: [0.60, 0.22, 0], fov: 28 },
@@ -38,7 +38,7 @@ function CameraRig({ section, interactive }: { section: Section; interactive: bo
     if (mobile) {
       p.x *= 0.12;
       p.y += 0.12;
-      p.z += 1.40;
+      p.z += 0.82;
     }
     const t = new THREE.Vector3(...state.target);
     const k = 1 - Math.exp(-3.6 * delta);
@@ -149,18 +149,20 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
           color: palette.trim,
           metalness: 0.9,
           roughness: 0.22,
-          clearcoat: 0.18,
-          clearcoatRoughness: 0.28,
-          envMapIntensity: 1.7,
+          clearcoat: 0.10,
+          clearcoatRoughness: 0.34,
+          anisotropy: 0.5,
+          envMapIntensity: 1.35,
         });
       } else {
         material = new THREE.MeshPhysicalMaterial({
           color: palette.metal,
           metalness: 0.86,
           roughness: 0.29,
-          clearcoat: 0.12,
-          clearcoatRoughness: 0.34,
-          envMapIntensity: 1.55,
+          clearcoat: 0.06,
+          clearcoatRoughness: 0.4,
+          anisotropy: 0.42,
+          envMapIntensity: 1.28,
         });
       }
 
@@ -210,10 +212,10 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
     });
 
     if (root.current) {
-      let ry = -0.72;
+      let ry = -0.20;
       let rx = -0.045;
       let rz = 0.012;
-      if (section === "hero") ry += Math.sin(state.clock.elapsedTime * 0.24) * 0.014;
+      if (section === "hero") ry += Math.sin(state.clock.elapsedTime * 0.24) * 0.010;
       if (section === "sound") { ry = -0.72; rx = -0.025; }
       if (section === "silence") ry = 0.16;
       if (section === "material") { ry = -0.92; rx = 0.015; }
@@ -255,7 +257,7 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
   });
 
   return (
-    <group ref={root} scale={0.80} position={[0, -0.10, 0]} rotation={[-0.035, -0.72, 0.018]}>
+    <group ref={root} scale={0.84} position={[0, -0.10, 0]} rotation={[-0.035, -0.20, 0.012]}>
       <primitive object={model} />
     </group>
   );
@@ -268,17 +270,17 @@ function SceneContent({ finish, section, progress, interactive }: { finish: Fini
     <>
       <CameraRig section={section} interactive={interactive} />
       <Environment resolution={512} frames={1}>
-        <Lightformer intensity={5.2} position={[0, 5.5, 4]} scale={[7, 4.5, 1]} />
-        <Lightformer intensity={3.0} position={[-4.5, 1.8, 2]} rotation={[0, Math.PI / 2, 0]} scale={[5, 3, 1]} />
-        <Lightformer intensity={4.0} position={[4.5, 2.2, -1.5]} rotation={[0, -Math.PI / 2, 0]} scale={[5, 4.5, 1]} />
-        <Lightformer intensity={1.4} position={[0, -3, 1.5]} scale={[5, 2, 1]} />
-        <Lightformer intensity={2.2} position={[0, 2, -5]} rotation={[0, Math.PI, 0]} scale={[4, 4, 1]} />
+        <Lightformer intensity={3.8} position={[0, 5.5, 4]} scale={[7, 4.5, 1]} />
+        <Lightformer intensity={2.0} position={[-4.5, 1.8, 2]} rotation={[0, Math.PI / 2, 0]} scale={[5, 3, 1]} />
+        <Lightformer intensity={2.8} position={[4.5, 2.2, -1.5]} rotation={[0, -Math.PI / 2, 0]} scale={[5, 4.5, 1]} />
+        <Lightformer intensity={1.0} position={[0, -3, 1.5]} scale={[5, 2, 1]} />
+        <Lightformer intensity={1.5} position={[0, 2, -5]} rotation={[0, Math.PI, 0]} scale={[4, 4, 1]} />
       </Environment>
 
       <ambientLight intensity={0.22} />
-      <directionalLight position={[5, 7, 5]} intensity={2.2} color="#fff8ef" castShadow />
-      <directionalLight position={[-4, 3, 2]} intensity={0.85} color="#d9c5b4" />
-      <pointLight position={[0, 2, -3]} intensity={0.55} color="#b99b7e" />
+      <directionalLight position={[5, 7, 5]} intensity={1.65} color="#fff8ef" castShadow />
+      <directionalLight position={[-4, 3, 2]} intensity={0.62} color="#d9c5b4" />
+      <pointLight position={[0, 2, -3]} intensity={0.34} color="#b99b7e" />
 
       <SilenceField active={section === "silence"} progress={progress} />
       <Pedestal visible={pedestal} />
@@ -303,12 +305,12 @@ export function ProductScene({ finish, section, progress, interactive }: { finis
   return (
     <Canvas
       shadows
-      camera={{ position: [0.48, 0.62, 6.55], fov: 35, near: 0.1, far: 100 }}
+      camera={{ position: [0.18, 0.60, 5.95], fov: 34, near: 0.1, far: 100 }}
       dpr={[1, 1.8]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.06;
+        gl.toneMappingExposure = 0.92;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
