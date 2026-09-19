@@ -309,11 +309,11 @@ def build_cup(scene, side: str, x: float):
     add(scene, hinge, f"Hinge_{side}", (x + sign * .56, .31, .02))
 
     # Slender curved yoke instead of block forks.
-    p0 = [x + sign * .42, 1.22, -.01]
-    p1 = [x + sign * .52, .96, -.01]
-    p2 = [x + sign * .58, .58, .00]
+    p0 = [x + sign * .42, 1.18, -.01]
+    p1 = [x + sign * .51, .92, -.01]
+    p2 = [x + sign * .57, .56, .00]
     p3 = [x + sign * .56, .30, .02]
-    yoke = sweep_path(bezier_path(p0, p1, p2, p3, 54), .105, .085, EDGE)
+    yoke = sweep_path(bezier_path(p0, p1, p2, p3, 54), .135, .095, EDGE)
     add(scene, yoke, f"Yoke_{side}")
 
     # Telescopic inner rail.
@@ -339,23 +339,42 @@ def build_cup(scene, side: str, x: float):
 
 
 def add_headband(scene):
-    # Thin structural metal core.
-    core = sweep_path(arc_path(1.14, 1.22, .92, math.pi * .98, math.pi * .02, 110), .105, .115, EDGE, ring_n=24)
-    add(scene, core, "Headband_Core")
-
-    # Padded outer wrap, only across the top region so it does not read as two full hoops.
-    top = sweep_path(arc_path(1.10, 1.16, .94, math.pi * .88, math.pi * .12, 94), .255, .245, SOFT, ring_n=26)
+    # One continuous padded band carries the visual weight.
+    top = sweep_path(
+        arc_path(1.10, 1.14, .96, math.pi * .93, math.pi * .07, 112),
+        .315, .285, SOFT, ring_n=28,
+    )
     add(scene, top, "Headband_Shell")
 
-    inner = sweep_path(arc_path(1.02, 1.03, .94, math.pi * .82, math.pi * .18, 80), .235, .145, TEXTILE, ring_n=24)
-    # slight rear offset lets the pad read as a distinct inner surface
-    inner.apply_translation([0, -.015, -.09])
+    # A shorter inner contact pad creates depth without reading as a second hoop.
+    inner = sweep_path(
+        arc_path(1.01, 1.01, .98, math.pi * .76, math.pi * .24, 76),
+        .265, .135, TEXTILE, ring_n=24,
+    )
+    inner.apply_translation([0, -.035, -.105])
     add(scene, inner, "Headband_Cushion")
 
-    # Machined end caps.
-    add(scene, rounded_box(.18, .27, .18, material=EDGE, power=2.8), "Headband_End_L", (-1.09, 1.23, -.015), (0, 0, -.10))
-    add(scene, rounded_box(.18, .27, .18, material=EDGE, power=2.8), "Headband_End_R", (1.09, 1.23, -.015), (0, 0, .10))
+    # Short exposed rails connect the padded band to the cup yokes.
+    left_rail = sweep_path(bezier_path(
+        [-1.075, 1.37, -.02],
+        [-1.10, 1.31, -.02],
+        [-1.11, 1.25, -.015],
+        [-1.10, 1.18, -.01],
+        30,
+    ), .115, .105, EDGE, ring_n=22)
+    right_rail = sweep_path(bezier_path(
+        [1.075, 1.37, -.02],
+        [1.10, 1.31, -.02],
+        [1.11, 1.25, -.015],
+        [1.10, 1.18, -.01],
+        30,
+    ), .115, .105, EDGE, ring_n=22)
+    add(scene, left_rail, "Headband_Core_L")
+    add(scene, right_rail, "Headband_Core_R")
 
+    # Machined end caps visually lock textile and metal together.
+    add(scene, rounded_box(.20, .24, .19, material=EDGE, power=2.7), "Headband_End_L", (-1.075, 1.36, -.015), (0, 0, -.08))
+    add(scene, rounded_box(.20, .24, .19, material=EDGE, power=2.7), "Headband_End_R", (1.075, 1.36, -.015), (0, 0, .08))
 
 def add_controls(scene):
     # Right-side tactile crown.
