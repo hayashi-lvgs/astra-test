@@ -10,7 +10,7 @@ export type Section = "hero" | "sound" | "silence" | "material" | "longevity" | 
 
 export const FINISHES: Record<Finish, { label: string; metal: string; cushion: string; trim: string }> = {
   graphite: { label: "Graphite", metal: "#4f4a45", cushion: "#171513", trim: "#b8afa4" },
-  natural: { label: "Natural", metal: "#9d9489", cushion: "#b8afa5", trim: "#cfc4b8" },
+  natural: { label: "Natural", metal: "#7f756c", cushion: "#a79d93", trim: "#b7aa9e" },
   warm: { label: "Warm Stone", metal: "#a9937d", cushion: "#67584e", trim: "#d7c4af" },
 };
 
@@ -95,12 +95,14 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
   const targetMetal = useMemo(() => new THREE.Color(palette.metal), [palette.metal]);
   const targetSoft = useMemo(() => new THREE.Color(palette.cushion), [palette.cushion]);
   const targetTrim = useMemo(() => new THREE.Color(palette.trim), [palette.trim]);
+  const targetFace = useMemo(() => new THREE.Color(palette.metal).lerp(new THREE.Color(palette.trim), 0.42), [palette.metal, palette.trim]);
 
   const model = useMemo(() => {
     const clone = scene.clone(true);
     clone.traverse((obj) => {
       if (!(obj instanceof THREE.Mesh)) return;
       const isTextile = obj.name.includes("Acoustic_Baffle") || obj.name.includes("Cushion_Seam");
+      const isFaceplate = obj.name.includes("Faceplate");
       const isSoft = obj.name.includes("Cushion_") || obj.name.includes("Headband_Shell") || obj.name.includes("Headband_Cushion");
       const isDriver = obj.name.includes("Driver");
       const isDark = obj.name.includes("Mic") || obj.name.includes("Port") || obj.name.includes("Rail") || obj.name.includes("Screw") || obj.name.includes("Knurl");
@@ -108,7 +110,17 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
 
       let material: THREE.MeshPhysicalMaterial;
 
-      if (isTextile) {
+      if (isFaceplate) {
+        material = new THREE.MeshPhysicalMaterial({
+          color: new THREE.Color(palette.metal).lerp(new THREE.Color(palette.trim), 0.42),
+          metalness: 0.78,
+          roughness: 0.36,
+          clearcoat: 0.04,
+          clearcoatRoughness: 0.44,
+          anisotropy: 0.72,
+          envMapIntensity: 1.05,
+        });
+      } else if (isTextile) {
         material = new THREE.MeshPhysicalMaterial({
           color: "#24211f",
           metalness: 0,
@@ -193,7 +205,9 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
         obj.visible = section === "sound";
       }
       const m = obj.material as THREE.MeshPhysicalMaterial;
-      if (obj.name.includes("Cushion") || obj.name.includes("Headband_Cushion")) {
+      if (obj.name.includes("Faceplate")) {
+        m.color.lerp(targetFace, a);
+      } else if (obj.name.includes("Cushion") || obj.name.includes("Headband_Cushion") || obj.name.includes("Headband_Shell")) {
         m.color.lerp(targetSoft, a);
       } else if (
         obj.name.includes("Rim") || obj.name.includes("Hinge") || obj.name.includes("Yoke") ||
@@ -270,16 +284,16 @@ function SceneContent({ finish, section, progress, interactive }: { finish: Fini
     <>
       <CameraRig section={section} interactive={interactive} />
       <Environment resolution={512} frames={1}>
-        <Lightformer intensity={3.8} position={[0, 5.5, 4]} scale={[7, 4.5, 1]} />
-        <Lightformer intensity={2.0} position={[-4.5, 1.8, 2]} rotation={[0, Math.PI / 2, 0]} scale={[5, 3, 1]} />
-        <Lightformer intensity={2.8} position={[4.5, 2.2, -1.5]} rotation={[0, -Math.PI / 2, 0]} scale={[5, 4.5, 1]} />
+        <Lightformer intensity={3.15} position={[0, 5.5, 4]} scale={[7, 4.5, 1]} />
+        <Lightformer intensity={1.75} position={[-4.5, 1.8, 2]} rotation={[0, Math.PI / 2, 0]} scale={[5, 3, 1]} />
+        <Lightformer intensity={2.25} position={[4.5, 2.2, -1.5]} rotation={[0, -Math.PI / 2, 0]} scale={[5, 4.5, 1]} />
         <Lightformer intensity={1.0} position={[0, -3, 1.5]} scale={[5, 2, 1]} />
         <Lightformer intensity={1.5} position={[0, 2, -5]} rotation={[0, Math.PI, 0]} scale={[4, 4, 1]} />
       </Environment>
 
       <ambientLight intensity={0.22} />
-      <directionalLight position={[5, 7, 5]} intensity={1.65} color="#fff8ef" castShadow />
-      <directionalLight position={[-4, 3, 2]} intensity={0.62} color="#d9c5b4" />
+      <directionalLight position={[5, 7, 5]} intensity={1.35} color="#fff8ef" castShadow />
+      <directionalLight position={[-4, 3, 2]} intensity={0.52} color="#d9c5b4" />
       <pointLight position={[0, 2, -3]} intensity={0.34} color="#b99b7e" />
 
       <SilenceField active={section === "silence"} progress={progress} />
@@ -310,7 +324,7 @@ export function ProductScene({ finish, section, progress, interactive }: { finis
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 0.92;
+        gl.toneMappingExposure = 0.80;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
