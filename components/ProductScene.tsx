@@ -10,7 +10,7 @@ export type Section = "hero" | "sound" | "silence" | "material" | "longevity" | 
 
 export const FINISHES: Record<Finish, { label: string; metal: string; cushion: string; trim: string }> = {
   graphite: { label: "Graphite", metal: "#4f4a45", cushion: "#171513", trim: "#b8afa4" },
-  natural: { label: "Natural", metal: "#7f756c", cushion: "#a79d93", trim: "#b7aa9e" },
+  natural: { label: "Natural", metal: "#746a62", cushion: "#9f958b", trim: "#94887e" },
   warm: { label: "Warm Stone", metal: "#a9937d", cushion: "#67584e", trim: "#d7c4af" },
 };
 
@@ -95,7 +95,7 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
   const targetMetal = useMemo(() => new THREE.Color(palette.metal), [palette.metal]);
   const targetSoft = useMemo(() => new THREE.Color(palette.cushion), [palette.cushion]);
   const targetTrim = useMemo(() => new THREE.Color(palette.trim), [palette.trim]);
-  const targetFace = useMemo(() => new THREE.Color(palette.metal).lerp(new THREE.Color(palette.trim), 0.42), [palette.metal, palette.trim]);
+  const targetFace = useMemo(() => new THREE.Color(palette.metal).lerp(new THREE.Color(palette.trim), 0.24), [palette.metal, palette.trim]);
 
   const model = useMemo(() => {
     const clone = scene.clone(true);
@@ -113,12 +113,12 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
       if (isFaceplate) {
         material = new THREE.MeshPhysicalMaterial({
           color: new THREE.Color(palette.metal).lerp(new THREE.Color(palette.trim), 0.42),
-          metalness: 0.78,
-          roughness: 0.36,
-          clearcoat: 0.04,
-          clearcoatRoughness: 0.44,
-          anisotropy: 0.72,
-          envMapIntensity: 1.05,
+          metalness: 0.72,
+          roughness: 0.43,
+          clearcoat: 0.03,
+          clearcoatRoughness: 0.48,
+          anisotropy: 0.68,
+          envMapIntensity: 0.82,
         });
       } else if (isTextile) {
         material = new THREE.MeshPhysicalMaterial({
@@ -159,12 +159,12 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
       } else if (isTrim) {
         material = new THREE.MeshPhysicalMaterial({
           color: palette.trim,
-          metalness: 0.9,
-          roughness: 0.22,
+          metalness: 0.82,
+          roughness: 0.31,
           clearcoat: 0.10,
           clearcoatRoughness: 0.34,
           anisotropy: 0.5,
-          envMapIntensity: 1.35,
+          envMapIntensity: 1.08,
         });
       } else {
         material = new THREE.MeshPhysicalMaterial({
@@ -324,7 +324,7 @@ export function ProductScene({ finish, section, progress, interactive }: { finis
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 0.80;
+        gl.toneMappingExposure = 0.74;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
