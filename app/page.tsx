@@ -84,14 +84,14 @@ export default function Page() {
           .hero-meta{display:none!important}
           .scroll-cue{bottom:18px!important;color:#2c2723!important;opacity:.48!important}
           .product-canvas{top:3vh!important;height:76vh!important}
-          .section-hero .product-canvas{transform:translate3d(0,30vh,0) scale(.84)!important}
+          .section-hero .product-canvas{transform:translate3d(0,20vh,0) scale(.88)!important}
         }
         @media(max-width:560px){
           .hero-section{min-height:108svh!important}
           .hero-copy h1{font-size:14.8vw!important}
           .hero-summary{font-size:14.5px!important}
           .product-canvas{height:70vh!important}
-          .section-hero .product-canvas{transform:translate3d(0,31vh,0) scale(.80)!important}
+          .section-hero .product-canvas{transform:translate3d(0,20vh,0) scale(.86)!important}
         }
       `}</style>
 
