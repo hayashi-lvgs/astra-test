@@ -100,31 +100,73 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
     const clone = scene.clone(true);
     clone.traverse((obj) => {
       if (!(obj instanceof THREE.Mesh)) return;
-      obj.material = (obj.material as THREE.Material).clone();
+      const isTextile = obj.name.includes("Acoustic_Baffle") || obj.name.includes("Cushion_Seam");
+      const isSoft = obj.name.includes("Cushion_") || obj.name.includes("Headband_Shell") || obj.name.includes("Headband_Cushion");
+      const isDriver = obj.name.includes("Driver");
+      const isDark = obj.name.includes("Mic") || obj.name.includes("Port") || obj.name.includes("Rail") || obj.name.includes("Screw") || obj.name.includes("Knurl");
+      const isTrim = obj.name.includes("Rim") || obj.name.includes("Hinge") || obj.name.includes("Yoke") || obj.name.includes("Control") || obj.name.includes("End") || obj.name.includes("Cap") || obj.name.includes("Core");
+
+      let material: THREE.MeshPhysicalMaterial;
+
+      if (isTextile) {
+        material = new THREE.MeshPhysicalMaterial({
+          color: "#24211f",
+          metalness: 0,
+          roughness: 0.92,
+          sheen: 0.72,
+          sheenRoughness: 0.86,
+          sheenColor: new THREE.Color("#7b7067"),
+          envMapIntensity: 0.42,
+        });
+      } else if (isSoft) {
+        material = new THREE.MeshPhysicalMaterial({
+          color: palette.cushion,
+          metalness: 0,
+          roughness: 0.78,
+          sheen: 0.82,
+          sheenRoughness: 0.8,
+          sheenColor: new THREE.Color("#82756b"),
+          envMapIntensity: 0.58,
+        });
+      } else if (isDriver) {
+        material = new THREE.MeshPhysicalMaterial({
+          color: "#2b211a",
+          metalness: 0.54,
+          roughness: 0.32,
+          emissive: new THREE.Color("#5b4430"),
+          emissiveIntensity: 0,
+          envMapIntensity: 1.15,
+        });
+      } else if (isDark) {
+        material = new THREE.MeshPhysicalMaterial({
+          color: "#151412",
+          metalness: 0.14,
+          roughness: 0.5,
+          envMapIntensity: 0.7,
+        });
+      } else if (isTrim) {
+        material = new THREE.MeshPhysicalMaterial({
+          color: palette.trim,
+          metalness: 0.9,
+          roughness: 0.22,
+          clearcoat: 0.18,
+          clearcoatRoughness: 0.28,
+          envMapIntensity: 1.7,
+        });
+      } else {
+        material = new THREE.MeshPhysicalMaterial({
+          color: palette.metal,
+          metalness: 0.86,
+          roughness: 0.29,
+          clearcoat: 0.12,
+          clearcoatRoughness: 0.34,
+          envMapIntensity: 1.55,
+        });
+      }
+
+      obj.material = material;
       obj.castShadow = true;
       obj.receiveShadow = true;
-
-      const m = obj.material as THREE.MeshStandardMaterial;
-      m.envMapIntensity = 1.35;
-
-      if (obj.name.includes("Cushion") || obj.name.includes("Headband_Cushion")) {
-        m.metalness = 0;
-        m.roughness = 0.76;
-      } else if (obj.name.includes("Driver")) {
-        m.metalness = 0.48;
-        m.roughness = 0.34;
-        m.emissive = new THREE.Color("#5b4430");
-        m.emissiveIntensity = 0;
-      } else if (obj.name.includes("Dark") || obj.name.includes("Mic") || obj.name.includes("Port") || obj.name.includes("Rail")) {
-        m.metalness = 0.08;
-        m.roughness = 0.56;
-      } else if (obj.name.includes("Rim") || obj.name.includes("Hinge") || obj.name.includes("Yoke") || obj.name.includes("Control") || obj.name.includes("End") || obj.name.includes("Cap")) {
-        m.metalness = 0.88;
-        m.roughness = 0.24;
-      } else {
-        m.metalness = 0.78;
-        m.roughness = 0.34;
-      }
     });
     return clone;
   }, [scene]);
@@ -148,7 +190,7 @@ function ProductModel({ finish, section, progress }: { finish: Finish; section: 
       if (obj.name.includes("Driver_") || obj.name.includes("Driver_Ring_")) {
         obj.visible = section === "sound";
       }
-      const m = obj.material as THREE.MeshStandardMaterial;
+      const m = obj.material as THREE.MeshPhysicalMaterial;
       if (obj.name.includes("Cushion") || obj.name.includes("Headband_Cushion")) {
         m.color.lerp(targetSoft, a);
       } else if (
