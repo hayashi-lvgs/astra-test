@@ -269,17 +269,17 @@ def build_cup(scene, side: str, x: float):
     add(scene, rim, f"Cup_Rim_{side}", (x, -.20, outer_z), (0, rot_y, 0))
 
     # Convex machined face plate with subtle crown.
-    face = convex_plate(.91, 1.22, thickness=.045, crown=.055, power=2.45, material=ALUMINUM)
+    face = convex_plate(.93, 1.20, thickness=.045, crown=.070, power=2.30, material=ALUMINUM)
     add(scene, face, f"Faceplate_{side}", (x, -.20, -.235 if side == "L" else .235), (0, rot_y if side == "R" else rot_y + math.pi, 0))
 
     # Soft oval cushion.
     cushion = ring_loft([
-        (-.125, 1.00, 1.31, 2.65),
-        (-.075, 1.08, 1.39, 2.7),
-        (0.0, 1.11, 1.42, 2.72),
-        (.075, 1.08, 1.39, 2.7),
-        (.125, 1.00, 1.31, 2.65),
-    ], inner_ratio=(.58, .66), material=SOFT)
+        (-.105, .98, 1.30, 2.45),
+        (-.065, 1.05, 1.37, 2.5),
+        (0.0, 1.08, 1.40, 2.52),
+        (.065, 1.05, 1.37, 2.5),
+        (.105, .98, 1.30, 2.45),
+    ], inner_ratio=(.61, .69), material=SOFT)
     cushion_z = .30 if side == "L" else -.30
     add(scene, cushion, f"Cushion_{side}", (x, -.20, cushion_z), (0, rot_y, 0))
 
@@ -313,7 +313,7 @@ def build_cup(scene, side: str, x: float):
     p1 = [x + sign * .51, .92, -.01]
     p2 = [x + sign * .57, .56, .00]
     p3 = [x + sign * .56, .30, .02]
-    yoke = sweep_path(bezier_path(p0, p1, p2, p3, 54), .135, .095, EDGE)
+    yoke = sweep_path(bezier_path(p0, p1, p2, p3, 54), .165, .105, EDGE)
     add(scene, yoke, f"Yoke_{side}")
 
     # Telescopic inner rail.
@@ -361,7 +361,7 @@ def add_headband(scene):
         [-1.11, 1.25, -.015],
         [-1.10, 1.18, -.01],
         30,
-    ), .115, .105, EDGE, ring_n=22)
+    ), .145, .110, EDGE, ring_n=22)
     right_rail = sweep_path(bezier_path(
         [1.075, 1.37, -.02],
         [1.10, 1.31, -.02],
