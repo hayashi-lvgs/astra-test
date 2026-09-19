@@ -368,7 +368,7 @@ def add_headband(scene):
         [1.11, 1.25, -.015],
         [1.10, 1.18, -.01],
         30,
-    ), .115, .105, EDGE, ring_n=22)
+    ), .165, .120, EDGE, ring_n=22)
     add(scene, left_rail, "Headband_Core_L")
     add(scene, right_rail, "Headband_Core_R")
 
@@ -400,6 +400,12 @@ def main():
     build_cup(scene, "R", .66)
     add_headband(scene)
     add_controls(scene)
+
+    # Minimal engraved L mark on the visible right faceplate.
+    logo_v = box([.018, .105, .008], DARK)
+    logo_h = box([.060, .018, .008], DARK)
+    add(scene, logo_v, "BrandMark_V_R", (.66, -.22, .305))
+    add(scene, logo_h, "BrandMark_H_R", (.683, -.263, .305))
 
     scene.metadata["product"] = "LUNEV ONE"
     scene.metadata["version"] = "portfolio-v3-70-target"
