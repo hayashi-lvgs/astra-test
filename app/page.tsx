@@ -6,7 +6,7 @@ import { FINISHES, ProductScene, type Finish, type Section } from "../components
 const sections: Section[] = ["hero", "sound", "silence", "material", "longevity", "explore", "customize", "specs", "purchase"];
 
 export default function Page() {
-  const [finish, setFinish] = useState<Finish>("graphite");
+  const [finish, setFinish] = useState<Finish>("natural");
   const [active, setActive] = useState<Section>("hero");
   const [progress, setProgress] = useState(0);
   const [bag, setBag] = useState(0);
@@ -131,7 +131,7 @@ export default function Page() {
             <span className="hero-price">¥148,000</span>
           </div>
         </div>
-        <div className="hero-meta"><span>Graphite</span><span>320 g</span><span>40 h battery</span></div>
+        <div className="hero-meta"><span>Natural</span><span>320 g</span><span>40 h battery</span></div>
         <div className="scroll-cue"><i />Scroll to discover</div>
       </section>
 
