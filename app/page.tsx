@@ -85,7 +85,7 @@ export default function Page() {
   const interactive = active === "explore";
   const darkNav =
     active === "sound" || active === "silence" || active === "specs";
-  const canvasHidden = active === "specs" || active === "purchase";
+  const canvasHidden = active === "hero" || active === "material" || active === "specs" || active === "purchase";
   const index = sectionOrder.indexOf(active) + 1;
 
   const siteClass =
@@ -193,8 +193,9 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="hero-stage" aria-hidden="true">
-            <div className="stage-topline">
+          <div className="hero-stage">
+            <img className="hero-render" src="/hero-image" alt="LUNEV ONE premium wireless headphones in Natural finish" />
+            <div className="stage-topline" aria-hidden="true">
               <span>Object 01</span>
               <span>Natural / 320 g</span>
             </div>
