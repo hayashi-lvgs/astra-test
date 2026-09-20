@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
+const ASSET_PREFIX = process.env.NEXT_PUBLIC_ASSET_PREFIX ?? "";
 import {
   FINISHES,
   ProductScene,
@@ -194,7 +196,7 @@ export default function Page() {
           </div>
 
           <div className="hero-stage">
-            <img className="hero-render" src="/hero-image" alt="LUNEV ONE premium wireless headphones in Natural finish" />
+            <img className="hero-render" src={ASSET_PREFIX + "/hero-image"} alt="LUNEV ONE premium wireless headphones in Natural finish" />
             <div className="stage-topline" aria-hidden="true">
               <span>Object 01</span>
               <span>Natural / 320 g</span>
