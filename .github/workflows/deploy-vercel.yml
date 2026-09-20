@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_NAME: lunev-one-experience
     steps:
       - uses: actions/checkout@v4
 
@@ -46,9 +47,9 @@ jobs:
       - name: Configure Vercel project
         if: env.VERCEL_TOKEN != ''
         run: |
-          npx vercel@latest project add lunev-one --token="$VERCEL_TOKEN" || true
-          npx vercel@latest link --yes --project lunev-one --token="$VERCEL_TOKEN"
-          npx vercel@latest project update lunev-one --framework nextjs --auto-detect output-directory --yes --token="$VERCEL_TOKEN"
+          npx vercel@latest project add "$VERCEL_PROJECT_NAME" --token="$VERCEL_TOKEN" || true
+          npx vercel@latest link --yes --project "$VERCEL_PROJECT_NAME" --token="$VERCEL_TOKEN"
+          npx vercel@latest project update "$VERCEL_PROJECT_NAME" --framework nextjs --auto-detect output-directory --yes --token="$VERCEL_TOKEN"
 
       - name: Deploy to Vercel
         if: env.VERCEL_TOKEN != ''
@@ -58,10 +59,10 @@ jobs:
         run: |
           mkdir -p qa/fv
           CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          curl --retry 8 --retry-delay 2 --retry-all-errors --fail --silent --show-error "https://lunev-one.vercel.app/?v=${GITHUB_SHA}" > /dev/null
+          curl --retry 8 --retry-delay 2 --retry-all-errors --fail --silent --show-error "https://lunev-one-experience.vercel.app/?v=${GITHUB_SHA}" > /dev/null
           COMMON_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader --enable-unsafe-swiftshader --disable-gpu-sandbox"
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/fv/fv-desktop-1440.png "https://lunev-one.vercel.app/?v=${GITHUB_SHA}"
-          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/fv/fv-mobile-390.png "https://lunev-one.vercel.app/?v=${GITHUB_SHA}"
+          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/fv/fv-desktop-1440.png "https://lunev-one-experience.vercel.app/?v=${GITHUB_SHA}"
+          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/fv/fv-mobile-390.png "https://lunev-one-experience.vercel.app/?v=${GITHUB_SHA}"
           file qa/fv/*.png
 
       - name: Upload FV screenshots
