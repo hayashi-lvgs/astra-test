@@ -62,37 +62,16 @@ jobs:
           "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-chrome --window-size=1440,1000 --virtual-time-budget=18000 --run-all-compositor-stages-before-draw --screenshot=/tmp/fv-warm.png http://127.0.0.1:3000/astra-test/
           "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-chrome --window-size=1440,1000 --virtual-time-budget=12000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/fv-desktop-1440.png http://127.0.0.1:3000/astra-test/
           "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-chrome-mobile --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=18000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/fv-mobile-390.png http://127.0.0.1:3000/astra-test/
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-section-sound --window-size=1440,1000 --virtual-time-budget=14000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/section-sound.png http://127.0.0.1:3000/astra-test/#sound
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-section-material --window-size=1440,1000 --virtual-time-budget=14000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/section-material.png http://127.0.0.1:3000/astra-test/#material
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-section-explore --window-size=1440,1000 --virtual-time-budget=14000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/section-explore.png http://127.0.0.1:3000/astra-test/#explore
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-section-customize --window-size=1440,1000 --virtual-time-budget=14000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/section-customize.png http://127.0.0.1:3000/astra-test/#customize
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
         with:
           name: lunev-pages-fv
           path: qa/fv/*.png
-          retention-days: 14
-
-      - name: Capture exported site screenshots
-        run: |
-          nohup python3 -m http.server 4173 --directory out > /tmp/pages-server.log 2>&1 &
-          for i in {1..30}; do
-            if curl --fail --silent http://127.0.0.1:4173/astra-test/ > /dev/null; then break; fi
-            sleep 1
-          done
-          mkdir -p qa/pages
-          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          COMMON_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader --enable-unsafe-swiftshader --disable-gpu-sandbox"
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/pages/fv-desktop-1440.png http://127.0.0.1:4173/astra-test/
-          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/pages/fv-mobile-390.png http://127.0.0.1:4173/astra-test/
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/pages/section-sound.png http://127.0.0.1:4173/astra-test/#sound
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/pages/section-material.png http://127.0.0.1:4173/astra-test/#material
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/pages/section-explore.png http://127.0.0.1:4173/astra-test/#explore
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/pages/section-customize.png http://127.0.0.1:4173/astra-test/#customize
-
-      - name: Upload QA screenshots
-        uses: actions/upload-artifact@v4
-        with:
-          name: lunev-pages-qa
-          path: qa/pages/*.png
-          if-no-files-found: error
           retention-days: 14
 
       - name: Configure Pages
