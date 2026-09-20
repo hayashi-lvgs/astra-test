@@ -244,12 +244,12 @@ function ProductModel({
       if (isFaceplate) {
         material = new THREE.MeshPhysicalMaterial({
           color: targetFace.clone(),
-          metalness: 0.38,
-          roughness: 0.66,
-          anisotropy: 0.56,
+          metalness: 0.10,
+          roughness: 0.82,
+          anisotropy: 0.22,
           clearcoat: 0.0,
-          clearcoatRoughness: 0.72,
-          envMapIntensity: 0.32,
+          clearcoatRoughness: 0.8,
+          envMapIntensity: 0.16,
         });
       } else if (isTextile) {
         material = new THREE.MeshPhysicalMaterial({
