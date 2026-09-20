@@ -85,7 +85,7 @@ export default function Page() {
   const interactive = active === "explore";
   const darkNav =
     active === "sound" || active === "silence" || active === "specs";
-  const canvasHidden = active === "hero" || active === "material" || active === "specs" || active === "purchase";
+  const canvasHidden = active === "hero" || active === "specs" || active === "purchase";
   const index = sectionOrder.indexOf(active) + 1;
 
   const siteClass =
