@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const ASSET_PREFIX = process.env.NEXT_PUBLIC_ASSET_PREFIX ?? "";
 import {
   FINISHES,
   ProductScene,
@@ -35,7 +33,7 @@ const sectionNames: Record<Section, string> = {
 };
 
 export default function Page() {
-  const [finish, setFinish] = useState<Finish>("natural");
+  const [finish, setFinish] = useState<Finish>("graphite");
   const [active, setActive] = useState<Section>("hero");
   const [progress, setProgress] = useState(0);
   const [bag, setBag] = useState(0);
@@ -48,26 +46,26 @@ export default function Page() {
       let best: { id: Section; score: number; progress: number } | undefined;
 
       for (const id of sectionOrder) {
-        const selector = '[data-section="' + id + '"]';
-        const element = document.querySelector<HTMLElement>(selector);
-        if (!element) continue;
+        const el = document.querySelector<HTMLElement>(
+          '[data-section="' + id + '"]'
+        );
+        if (!el) continue;
 
-        const rect = element.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
         const centerDistance = Math.abs(rect.top + rect.height / 2 - vh / 2);
-        const score = -centerDistance;
         const localProgress = Math.min(
           1,
           Math.max(0, (vh - rect.top) / (vh + rect.height))
         );
 
-        if (!best || score > best.score) {
-          best = { id, score, progress: localProgress };
+        if (!best || -centerDistance > best.score) {
+          best = { id, score: -centerDistance, progress: localProgress };
         }
       }
 
       if (!best) return;
-
       setProgress(best.progress);
+
       if (best.id !== activeRef.current) {
         activeRef.current = best.id;
         setActive(best.id);
@@ -90,34 +88,27 @@ export default function Page() {
   const canvasHidden = active === "specs" || active === "purchase";
   const index = sectionOrder.indexOf(active) + 1;
 
-  const siteClass =
-    "site section-" + active + (darkNav ? " nav-on-dark" : "");
-  const canvasClass =
-    "product-canvas" +
-    (interactive ? " is-interactive" : "") +
-    (canvasHidden ? " is-hidden" : "");
-
   return (
-    <main className={siteClass}>
+    <main
+      className={
+        "site section-" + active + (darkNav ? " nav-on-dark" : "")
+      }
+    >
       <header className="nav-shell">
         <a className="brand-mark" href="#hero" aria-label="LUNEV home">
           LUNEV
         </a>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <a href="#sound">Product</a>
+          <a href="#sound">Experience</a>
           <a href="#material">Design</a>
-          <a href="#explore">3D Explore</a>
+          <a href="#explore">3D Object</a>
           <a href="#specs">Specifications</a>
         </nav>
 
-        <button
-          className="bag-button"
-          onClick={() => setBag((value) => value + 1)}
-          aria-label={"Bag, " + bag + " items"}
-        >
-          Bag <span>{bag > 0 ? "(" + bag + ")" : ""}</span>
-        </button>
+        <a className="bag-button" href="#purchase">
+          Bag <span>{bag > 0 ? "(" + bag + ")" : "0"}</span>
+        </a>
 
         <button
           className="menu-button"
@@ -130,23 +121,24 @@ export default function Page() {
 
       {menuOpen && (
         <div className="mobile-menu">
-          <button
-            className="menu-close"
-            onClick={() => setMenuOpen(false)}
-          >
-            Close
-          </button>
+          <div className="mobile-menu-top">
+            <span>LUNEV ONE</span>
+            <button onClick={() => setMenuOpen(false)}>Close</button>
+          </div>
+
           {[
-            ["Product", "#sound"],
+            ["Experience", "#sound"],
             ["Design", "#material"],
-            ["3D Explore", "#explore"],
+            ["3D Object", "#explore"],
             ["Specifications", "#specs"],
-          ].map(([label, href]) => (
+            ["Purchase", "#purchase"],
+          ].map(([label, href], i) => (
             <a
               key={label}
               href={href}
               onClick={() => setMenuOpen(false)}
             >
+              <span>0{i + 1}</span>
               {label}
             </a>
           ))}
@@ -156,13 +148,22 @@ export default function Page() {
       <aside className="section-progress" aria-hidden="true">
         <span>{String(index).padStart(2, "0")}</span>
         <i>
-          <b style={{ transform: "scaleY(" + index / sectionOrder.length + ")" }} />
+          <b
+            style={{
+              transform:
+                "scaleY(" + index / sectionOrder.length + ")",
+            }}
+          />
         </i>
         <em>{String(sectionOrder.length).padStart(2, "0")}</em>
       </aside>
 
       <div
-        className={canvasClass}
+        className={
+          "product-canvas" +
+          (interactive ? " is-interactive" : "") +
+          (canvasHidden ? " is-hidden" : "")
+        }
         aria-hidden={!interactive}
       >
         <ProductScene
@@ -174,53 +175,75 @@ export default function Page() {
       </div>
 
       <section id="hero" data-section="hero" className="hero-section">
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <p className="eyebrow">LUNEV ONE / Wireless ANC Headphones</p>
-            <h1>
-              Quiet,
-              <br />
-              engineered.
-            </h1>
-            <p className="hero-summary">
-              A listening object shaped around material clarity,
-              physical control and long-term ownership.
-            </p>
+        <div className="architectural-light" aria-hidden="true">
+          <span className="light-panel light-panel-a" />
+          <span className="light-panel light-panel-b" />
+          <span className="light-shadow" />
+        </div>
 
-            <div className="hero-actions">
-              <a className="primary-link" href="#explore">
-                Experience in 3D <span>↘</span>
-              </a>
-              <span className="hero-price">¥148,000</span>
-            </div>
-          </div>
+        <div className="hero-copy">
+          <p className="eyebrow">
+            LUNEV ONE / Premium Wireless ANC Headphones
+          </p>
+          <h1>
+            Silence,
+            <br />
+            made tangible.
+          </h1>
+          <p className="hero-summary">
+            A premium listening object designed around material clarity,
+            physical control and long-term ownership.
+          </p>
 
-          <div className="hero-stage">
-            <img className="hero-render" src={ASSET_PREFIX + "/hero-image"} alt="LUNEV ONE premium wireless headphones in Natural finish" />
-            <div className="stage-topline" aria-hidden="true">
-              <span>Object 01</span>
-              <span>Natural / 320 g</span>
-            </div>
-            <div className="stage-crosshair stage-crosshair-a" />
-            <div className="stage-crosshair stage-crosshair-b" />
-            <div className="stage-surface" />
-            <div className="stage-note">
-              <small>Industrial design</small>
-              <strong>Soft geometry × machined precision</strong>
-            </div>
+          <div className="hero-actions">
+            <a className="primary-link" href="#explore">
+              Explore the object <span>↘</span>
+            </a>
+            <span className="hero-price">¥148,000</span>
           </div>
         </div>
 
-        <div className="hero-footer">
-          <span>40 mm custom dynamic driver</span>
-          <span>Adaptive ANC</span>
-          <span>Up to 40 h battery</span>
+        <div className="hero-object-frame" aria-hidden="true">
+          <div className="object-frame-top">
+            <span>Object 01</span>
+            <span>Graphite / 320 g</span>
+          </div>
+
+          <div className="object-frame-corner corner-a" />
+          <div className="object-frame-corner corner-b" />
+
+          <div className="hero-plinth" />
+
+          <div className="hero-object-note">
+            <span>Premium audio object</span>
+            <strong>Machined aluminium / soft contact surfaces</strong>
+          </div>
+        </div>
+
+        <div className="hero-spec-rail">
+          <div>
+            <span>Driver</span>
+            <strong>40 mm</strong>
+          </div>
+          <div>
+            <span>Noise control</span>
+            <strong>Adaptive ANC</strong>
+          </div>
+          <div>
+            <span>Battery</span>
+            <strong>40 h</strong>
+          </div>
         </div>
 
         <a className="scroll-cue" href="#sound">
           <i />
-          <span>Discover the object</span>
+          <span>Scroll to discover</span>
         </a>
+
+        <div className="hero-chapter" aria-hidden="true">
+          <span>01</span>
+          <strong>Premium audio object</strong>
+        </div>
       </section>
 
       <section
@@ -228,18 +251,19 @@ export default function Page() {
         data-section="sound"
         className="story dark-section sound-section"
       >
-        <div className="section-index">01</div>
+        <div className="section-watermark">SOUND</div>
+
         <div className="story-copy left-copy">
-          <p className="eyebrow light">Sound / Driver architecture</p>
+          <p className="eyebrow light">01 / Acoustic architecture</p>
           <h2>
-            Detail,
+            Hear the
             <br />
-            without force.
+            space between.
           </h2>
           <p>
-            A custom 40 mm dynamic driver is revealed only when the
-            product needs to explain itself. The 3D view turns a
-            specification into something spatial and understandable.
+            The driver becomes visible only when it adds understanding.
+            Scroll separates the acoustic assembly from the object so
+            a specification becomes spatial, physical and memorable.
           </p>
 
           <div className="metric-rail">
@@ -249,14 +273,20 @@ export default function Page() {
             </div>
             <div>
               <strong>USB-C</strong>
-              <span>Digital audio</span>
+              <span>Lossless digital audio</span>
             </div>
           </div>
         </div>
 
-        <div className="story-caption">
+        <div className="sound-rings" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+
+        <div className="section-footnote">
           <span>Driver reveal</span>
-          <span>Scroll-controlled separation</span>
+          <span>Scroll / 01—02</span>
         </div>
       </section>
 
@@ -265,26 +295,34 @@ export default function Page() {
         data-section="silence"
         className="story dark-section silence-section"
       >
-        <div className="section-index">02</div>
+        <div className="section-watermark quiet-watermark">QUIET</div>
+
         <div className="story-copy right-copy">
-          <p className="eyebrow light">Silence / Adaptive ANC</p>
+          <p className="eyebrow light">02 / Adaptive silence</p>
           <h2>
-            Make space
+            Less noise.
             <br />
-            for less.
+            More object.
           </h2>
           <p>
-            Noise control is presented as a reduction of visual
-            pressure rather than another technical dashboard. As the
-            field contracts, the product remains still.
+            Noise cancellation is visualized as a field that contracts
+            around the product. The interface removes information at
+            the same moment the product removes noise.
           </p>
 
           <div className="metric-rail single">
             <div>
               <strong>Adaptive</strong>
-              <span>Noise cancellation + transparency</span>
+              <span>ANC + transparency / context aware</span>
             </div>
           </div>
+        </div>
+
+        <div className="silence-orbit" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
         </div>
       </section>
 
@@ -293,39 +331,44 @@ export default function Page() {
         data-section="material"
         className="story material-section"
       >
-        <div className="section-index dark-number">03</div>
-        <div className="material-grid">
-          <div className="story-copy left-copy compact-copy">
-            <p className="eyebrow">Material / CMF</p>
-            <h2>
-              Made to be
-              <br />
-              touched.
-            </h2>
+        <div className="material-title">
+          <p className="eyebrow">03 / Material intelligence</p>
+          <h2>
+            Designed
+            <br />
+            to be touched.
+          </h2>
+        </div>
+
+        <div className="material-ledger">
+          <div>
+            <span>01</span>
+            <strong>Machined aluminium</strong>
             <p>
-              Metal, textile and cushion are tuned to read differently
-              before the product is ever held. Reflectance is part of
-              the interface.
+              Restrained reflections expose the geometry without making
+              the product feel ornamental.
             </p>
           </div>
-
-          <div className="material-ledger">
-            <div>
-              <span>01</span>
-              <strong>Machined aluminium</strong>
-              <p>Directional metal response and controlled edge light.</p>
-            </div>
-            <div>
-              <span>02</span>
-              <strong>Soft contact surfaces</strong>
-              <p>Lower reflectance and a muted sheen for perceived comfort.</p>
-            </div>
-            <div>
-              <span>03</span>
-              <strong>Tactile controls</strong>
-              <p>Physical actions remain visible, reachable and deliberate.</p>
-            </div>
+          <div>
+            <span>02</span>
+            <strong>Woven contact textile</strong>
+            <p>
+              Low reflectance and soft edge light communicate comfort
+              before physical contact.
+            </p>
           </div>
+          <div>
+            <span>03</span>
+            <strong>Physical controls</strong>
+            <p>
+              Tactile input remains visible and intentional instead of
+              disappearing into a touch surface.
+            </p>
+          </div>
+        </div>
+
+        <div className="material-type" aria-hidden="true">
+          ALUMINIUM
         </div>
       </section>
 
@@ -334,27 +377,34 @@ export default function Page() {
         data-section="longevity"
         className="story longevity-section"
       >
-        <div className="section-index dark-number">04</div>
         <div className="story-copy right-copy">
-          <p className="eyebrow">Longevity / Serviceability</p>
+          <p className="eyebrow">04 / Long-term ownership</p>
           <h2>
             Built to stay
             <br />
             in use.
           </h2>
           <p>
-            Ear cushions and the inner headband separate from the
-            product in 3D to make maintenance part of the ownership
-            story—not an afterthought.
+            Replaceable contact parts separate from the product in 3D.
+            Maintenance is treated as part of the ownership experience,
+            not hidden in documentation.
           </p>
-          <a className="text-link" href="#explore">
-            Inspect the construction <span>↘</span>
-          </a>
         </div>
 
-        <div className="longevity-note">
-          <span>Replaceable</span>
-          <strong>Cushions / inner headband</strong>
+        <div className="service-label service-label-a">
+          <span>01</span>
+          <strong>Ear cushions</strong>
+          <i />
+        </div>
+        <div className="service-label service-label-b">
+          <span>02</span>
+          <strong>Inner headband</strong>
+          <i />
+        </div>
+
+        <div className="longevity-statement">
+          <span>Replace what wears.</span>
+          <strong>Keep what matters.</strong>
         </div>
       </section>
 
@@ -363,28 +413,36 @@ export default function Page() {
         data-section="explore"
         className="story explore-section"
       >
-        <div className="explore-head">
+        <div className="explore-top">
           <div>
-            <p className="eyebrow">05 / Interactive object</p>
+            <p className="eyebrow">05 / Free exploration</p>
             <h2>
-              Every angle.
+              Inspect
               <br />
-              Nothing hidden.
+              the object.
             </h2>
           </div>
+
           <p>
-            Drag directly on the product. The interaction is here to
-            improve product understanding—not to decorate the page.
+            Guided storytelling ends here. Drag directly on LUNEV ONE
+            to inspect proportion, surface, control placement and
+            construction from any angle.
           </p>
+        </div>
+
+        <div className="explore-reticle" aria-hidden="true">
+          <i />
+          <i />
         </div>
 
         <div className="control-pill">
           <i />
-          <span>3D controls active</span>
+          <span>Drag to rotate</span>
         </div>
 
-        <div className="explore-instruction">
-          Drag to rotate <span>·</span> Scroll to continue
+        <div className="explore-status">
+          <span>3D controls active</span>
+          <span>Scroll to finish</span>
         </div>
       </section>
 
@@ -396,10 +454,14 @@ export default function Page() {
         <div className="finish-header">
           <p className="eyebrow">06 / Finish</p>
           <h2>
-            One object.
-            <br />
             Three tones.
+            <br />
+            One character.
           </h2>
+        </div>
+
+        <div className="finish-name" aria-hidden="true">
+          {FINISHES[finish].label}
         </div>
 
         <div className="customize-panel">
@@ -408,11 +470,7 @@ export default function Page() {
             <strong>{FINISHES[finish].label}</strong>
           </div>
 
-          <div
-            className="finish-list"
-            role="radiogroup"
-            aria-label="Product finish"
-          >
+          <div className="finish-list" role="radiogroup" aria-label="Product finish">
             {(Object.keys(FINISHES) as Finish[]).map((key) => (
               <button
                 key={key}
@@ -420,9 +478,7 @@ export default function Page() {
                 aria-checked={finish === key}
                 onClick={() => setFinish(key)}
                 className={
-                  finish === key
-                    ? "finish-option active"
-                    : "finish-option"
+                  finish === key ? "finish-option active" : "finish-option"
                 }
               >
                 <span
@@ -439,22 +495,17 @@ export default function Page() {
         </div>
       </section>
 
-      <section
-        id="specs"
-        data-section="specs"
-        className="specs-section"
-      >
+      <section id="specs" data-section="specs" className="specs-section">
         <div className="specs-heading">
           <p className="eyebrow light">07 / Specifications</p>
           <h2>
-            Less,
+            Everything
             <br />
-            precisely.
+            essential.
           </h2>
           <p>
-            The specification layer is deliberately quiet: enough
-            information to make a decision without turning the
-            experience into a comparison sheet.
+            Enough information to make a decision. Nothing included
+            simply because a specification table can hold it.
           </p>
         </div>
 
@@ -462,34 +513,42 @@ export default function Page() {
           <div>
             <dt>Driver</dt>
             <dd>40 mm custom dynamic</dd>
+            <span>01</span>
           </div>
           <div>
             <dt>Noise control</dt>
             <dd>Adaptive ANC + transparency</dd>
+            <span>02</span>
           </div>
           <div>
             <dt>Battery</dt>
             <dd>Up to 40 hours</dd>
+            <span>03</span>
           </div>
           <div>
             <dt>Connectivity</dt>
             <dd>Bluetooth 5.3 / USB-C audio</dd>
+            <span>04</span>
           </div>
           <div>
             <dt>Materials</dt>
-            <dd>Machined aluminium / soft textile</dd>
+            <dd>Machined aluminium / woven textile</dd>
+            <span>05</span>
           </div>
           <div>
             <dt>Weight</dt>
             <dd>Approx. 320 g</dd>
+            <span>06</span>
           </div>
           <div>
             <dt>Serviceability</dt>
             <dd>Replaceable cushions / inner headband</dd>
+            <span>07</span>
           </div>
           <div>
             <dt>Finish</dt>
             <dd>{FINISHES[finish].label}</dd>
+            <span>08</span>
           </div>
         </dl>
       </section>
@@ -499,15 +558,19 @@ export default function Page() {
         data-section="purchase"
         className="purchase-section"
       >
+        <div className="purchase-kicker">LUNEV / OBJECT 01</div>
+
         <div className="purchase-copy">
-          <p className="eyebrow">LUNEV ONE / Concept product</p>
+          <p className="eyebrow">Premium wireless ANC headphones</p>
           <h2>
-            Keep the
+            Own the
             <br />
             quiet.
           </h2>
           <p>
-            Premium wireless ANC headphones in {FINISHES[finish].label}.
+            LUNEV ONE in {FINISHES[finish].label}.
+            <br />
+            Concept product / ¥148,000.
           </p>
         </div>
 
@@ -521,14 +584,15 @@ export default function Page() {
             <strong>¥148,000</strong>
           </div>
           <div className="purchase-row">
-            <span>Delivery</span>
-            <strong>Concept only</strong>
+            <span>Availability</span>
+            <strong>Concept release</strong>
           </div>
 
           <button onClick={() => setBag((value) => value + 1)}>
-            <span>Add to bag</span>
-            <span>↗</span>
+            <span>{bag > 0 ? "Added to bag" : "Add to bag"}</span>
+            <span>{bag > 0 ? "✓" : "↗"}</span>
           </button>
+
           <small>Portfolio concept. No payment is processed.</small>
         </div>
       </section>
