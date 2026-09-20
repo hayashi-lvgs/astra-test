@@ -66,24 +66,47 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Verify Vercel token
+      - name: Link personal Vercel project through API
         if: env.VERCEL_TOKEN != ''
-        continue-on-error: true
         run: |
-          STATUS=$(curl -sS -o /tmp/vercel-user.json -w "%{http_code}"             -H "Authorization: Bearer $VERCEL_TOKEN"             https://api.vercel.com/v2/user)
-          echo "Vercel /v2/user HTTP status: $STATUS"
-          node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync('/tmp/vercel-user.json','utf8')); if(j.user){console.log('Authenticated Vercel user:', j.user.username || j.user.name || j.user.uid);} else {console.log('Vercel auth response:', j.error?.code || 'unknown_error', '-', j.error?.message || 'No user returned');}"
-          test "$STATUS" = "200"
+          set -euo pipefail
 
-      - name: Configure Vercel project
-        if: env.VERCEL_TOKEN != ''
-        continue-on-error: true
-        run: |
-          npx vercel@latest project add "$VERCEL_PROJECT_NAME" --token="$VERCEL_TOKEN" || true
-          npx vercel@latest link --yes --project "$VERCEL_PROJECT_NAME" --token="$VERCEL_TOKEN"
-          npx vercel@latest project update "$VERCEL_PROJECT_NAME" --framework nextjs --auto-detect output-directory --yes --token="$VERCEL_TOKEN"
+          curl -sS             -H "Authorization: Bearer $VERCEL_TOKEN"             https://api.vercel.com/v2/user > /tmp/vercel-user.json
+
+          USER_ID=$(node -e "const j=require('/tmp/vercel-user.json'); process.stdout.write(j.user?.id || j.user?.uid || '')")
+          USERNAME=$(node -e "const j=require('/tmp/vercel-user.json'); process.stdout.write(j.user?.username || j.user?.name || '')")
+          echo "Authenticated Vercel user: $USERNAME"
+          test -n "$USER_ID"
+
+          STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"             -X POST             -H "Authorization: Bearer $VERCEL_TOKEN"             -H "Content-Type: application/json"             https://api.vercel.com/v11/projects             -d "{"name":"$VERCEL_PROJECT_NAME","framework":"nextjs"}")
+
+          echo "Create project status: $STATUS"
+
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "201" ]; then
+            LOOKUP_STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"               -H "Authorization: Bearer $VERCEL_TOKEN"               "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_NAME")
+            echo "Lookup project status: $LOOKUP_STATUS"
+            test "$LOOKUP_STATUS" = "200"
+          fi
+
+          PROJECT_ID=$(node -e "const j=require('/tmp/vercel-project.json'); process.stdout.write(j.id || '')")
+          ACCOUNT_ID=$(node -e "const j=require('/tmp/vercel-project.json'); process.stdout.write(j.accountId || j.ownerId || '')")
+          if [ -z "$ACCOUNT_ID" ]; then ACCOUNT_ID="$USER_ID"; fi
+
+          echo "Project ID resolved: $PROJECT_ID"
+          test -n "$PROJECT_ID"
+
+          mkdir -p .vercel
+          node -e "const fs=require('fs'); fs.writeFileSync('.vercel/project.json', JSON.stringify({projectId: process.env.PROJECT_ID, orgId: process.env.ACCOUNT_ID}, null, 2))"             PROJECT_ID="$PROJECT_ID" ACCOUNT_ID="$ACCOUNT_ID"
 
       - name: Deploy to Vercel
         if: env.VERCEL_TOKEN != ''
-        continue-on-error: true
-        run: npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+        run: |
+          PROJECT_ID=$(node -e "process.stdout.write(require('./.vercel/project.json').projectId)")
+          ORG_ID=$(node -e "process.stdout.write(require('./.vercel/project.json').orgId)")
+          echo "Deploying project $PROJECT_ID under $ORG_ID"
+          npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN" | tee /tmp/vercel-deploy.log
+
+      - name: Show deployment URL
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          grep -Eo 'https://[^ ]+\.vercel\.app' /tmp/vercel-deploy.log | tail -n 1 || true
