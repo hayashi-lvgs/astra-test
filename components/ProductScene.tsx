@@ -35,7 +35,7 @@ export const FINISHES: Record<
     label: "Graphite",
     metal: "#302d2a",
     cushion: "#11100f",
-    trim: "#756d66",
+    trim: "#514a45",
   },
   natural: {
     label: "Natural",
@@ -290,10 +290,10 @@ function ProductModel({
       } else if (isTrim) {
         material = new THREE.MeshPhysicalMaterial({
           color: targetTrim.clone(),
-          metalness: 0.56,
-          roughness: 0.48,
-          anisotropy: 0.38,
-          envMapIntensity: 0.52,
+          metalness: 0.46,
+          roughness: 0.54,
+          anisotropy: 0.34,
+          envMapIntensity: 0.38,
         });
       } else {
         material = new THREE.MeshPhysicalMaterial({
