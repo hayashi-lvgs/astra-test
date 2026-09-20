@@ -93,7 +93,7 @@ button,a{-webkit-tap-highlight-color:transparent}
 }
 .product-canvas.is-interactive{pointer-events:auto}
 .product-canvas.is-hidden{opacity:0}
-.section-hero .product-canvas{transform:translate3d(24vw,4vh,0) scale(.84)}
+.section-hero .product-canvas{transform:translate3d(25vw,2.5vh,0) scale(.90)}
 .section-sound .product-canvas{transform:translate3d(22vw,0,0) scale(.96)}
 .section-silence .product-canvas{transform:translate3d(-20vw,1vh,0) scale(.92)}
 .section-material .product-canvas{transform:translate3d(20vw,1vh,0) scale(1)}
@@ -158,11 +158,13 @@ button,a{-webkit-tap-highlight-color:transparent}
 
 .hero-object-frame{
   position:absolute;z-index:2;right:4.7vw;top:13vh;width:51vw;height:72vh;
-  border:1px solid rgba(255,255,255,.44);
+  border-top:1px solid rgba(255,255,255,.46);
+  border-bottom:1px solid rgba(87,65,48,.07);
   background:
-    linear-gradient(130deg,rgba(255,255,255,.12),transparent 37%),
-    radial-gradient(circle at 56% 28%,rgba(255,255,255,.26),transparent 30%);
-  box-shadow:0 38px 100px rgba(72,52,36,.075),inset 0 0 0 1px rgba(72,52,36,.025);
+    linear-gradient(126deg,rgba(255,255,255,.10),transparent 40%),
+    radial-gradient(circle at 57% 28%,rgba(255,255,255,.19),transparent 31%),
+    linear-gradient(180deg,rgba(255,255,255,.035),rgba(84,61,44,.025));
+  box-shadow:0 34px 100px rgba(72,52,36,.06);
 }
 .object-frame-top{
   position:absolute;z-index:5;left:20px;right:20px;top:17px;display:flex;justify-content:space-between;
@@ -176,9 +178,9 @@ button,a{-webkit-tap-highlight-color:transparent}
 .corner-b{right:17px;bottom:64px;transform:rotate(180deg)}
 .hero-plinth{
   position:absolute;left:2%;right:-8%;bottom:-1px;height:25%;
-  background:linear-gradient(180deg,#d9cdc1,#b9a690);
-  clip-path:polygon(14% 7%,100% 0,100% 100%,0 100%);
-  box-shadow:0 -1px 0 rgba(255,255,255,.48),0 -28px 70px rgba(60,43,31,.05);
+  background:linear-gradient(180deg,#d6c8ba,#b7a38f);
+  clip-path:polygon(12% 8%,100% 0,100% 100%,0 100%);
+  box-shadow:0 -1px 0 rgba(255,255,255,.42),0 -22px 60px rgba(60,43,31,.04);
 }
 .hero-object-note{
   position:absolute;right:20px;bottom:20px;z-index:5;
@@ -446,21 +448,21 @@ footer a{justify-self:end}
   .hero-section:before{
     background:linear-gradient(180deg,rgba(244,239,233,.98) 0%,rgba(244,239,233,.92) 39%,rgba(244,239,233,.24) 59%,transparent 72%);
   }
-  .hero-copy{width:100%;max-width:540px;margin-top:8vh}
+  .hero-copy{width:100%;max-width:540px;margin-top:6.5vh}
   .hero-copy h1{font-size:clamp(62px,15vw,94px)}
   .hero-summary{font-size:14.5px;max-width:29ch;margin-top:22px}
-  .hero-actions{margin-top:24px;flex-direction:column;align-items:flex-start;gap:13px}
-  .hero-price{border-left:0;padding-left:0}
+  .hero-actions{margin-top:22px;flex-direction:row;align-items:center;gap:18px}
+  .hero-price{border-left:1px solid rgba(23,21,19,.16);padding-left:18px}
   .hero-object-frame{
-    left:22px;right:22px;top:auto;bottom:6vh;width:auto;height:43vh;
+    left:22px;right:22px;top:auto;bottom:2.8vh;width:auto;height:46vh;
   }
   .hero-object-note{right:16px;bottom:16px;max-width:190px}
   .hero-object-note strong{font-size:9px}
   .hero-spec-rail,.hero-chapter{display:none}
   .scroll-cue{left:22px;bottom:17px}
 
-  .product-canvas{top:17vh;height:72vh}
-  .section-hero .product-canvas{transform:translate3d(0,28vh,0) scale(.78)}
+  .product-canvas{top:14vh;height:77vh}
+  .section-hero .product-canvas{transform:translate3d(3vw,18vh,0) scale(.98)}
   .section-sound .product-canvas,
   .section-material .product-canvas,
   .section-explore .product-canvas{
@@ -515,14 +517,14 @@ footer a{justify-self:end}
   .nav-shell:after{left:20px;right:20px}
   .bag-button,.menu-button{font-size:7px}
   .hero-section{padding-left:20px;padding-right:20px}
-  .hero-copy{margin-top:6.7vh}
+  .hero-copy{margin-top:5.8vh}
   .hero-copy h1{font-size:14.9vw}
-  .hero-summary{font-size:14px}
-  .hero-object-frame{left:20px;right:20px;height:39vh;bottom:5.5vh}
+  .hero-summary{font-size:13.8px;max-width:27ch}
+  .hero-object-frame{left:20px;right:20px;height:43vh;bottom:2.5vh}
   .object-frame-top{left:14px;right:14px;top:13px}
   .hero-object-note{display:none}
-  .product-canvas{height:66vh;top:20vh}
-  .section-hero .product-canvas{transform:translate3d(0,28vh,0) scale(.74)}
+  .product-canvas{height:73vh;top:15vh}
+  .section-hero .product-canvas{transform:translate3d(4vw,17vh,0) scale(1.06)}
   .story{padding-left:20px;padding-right:20px}
   .story-copy h2,.material-title h2{font-size:14.8vw}
   .metric-rail{margin-top:28px}
