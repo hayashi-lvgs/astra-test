@@ -33,9 +33,9 @@ export const FINISHES: Record<
 > = {
   graphite: {
     label: "Graphite",
-    metal: "#393633",
-    cushion: "#171513",
-    trim: "#817a72",
+    metal: "#45403b",
+    cushion: "#121110",
+    trim: "#8f857b",
   },
   natural: {
     label: "Natural",
@@ -59,12 +59,12 @@ const cameraStates: Record<
     fov: number;
   }
 > = {
-  hero: { position: [0.2, 0.58, 6.25], target: [0.02, 0.56, 0], fov: 35 },
+  hero: { position: [0.18, 0.62, 5.45], target: [0.02, 0.54, 0], fov: 32 },
   sound: { position: [1.7, 0.3, 4.5], target: [0.45, 0.08, 0], fov: 31 },
   silence: { position: [-1.6, 0.6, 5.1], target: [-0.18, 0.48, 0], fov: 34 },
   material: { position: [2.0, 0.45, 4.15], target: [0.58, 0.2, 0], fov: 29 },
   longevity: { position: [0.1, 0.75, 5.35], target: [0, 0.55, 0], fov: 35 },
-  explore: { position: [0.0, 0.62, 5.55], target: [0, 0.5, 0], fov: 35 },
+  explore: { position: [0.0, 0.62, 5.05], target: [0, 0.5, 0], fov: 33 },
   customize: { position: [-0.3, 0.58, 5.35], target: [0, 0.48, 0], fov: 35 },
   specs: { position: [1.1, 0.5, 5.2], target: [0.2, 0.4, 0], fov: 35 },
   purchase: { position: [-1.0, 0.55, 5.2], target: [-0.1, 0.4, 0], fov: 35 },
@@ -89,7 +89,7 @@ function CameraRig({
     if (mobile) {
       destination.x *= 0.16;
       destination.y += 0.08;
-      destination.z += 0.8;
+      destination.z += section === "hero" ? 0.35 : 0.68;
     }
 
     const target = new THREE.Vector3(...state.target);
@@ -392,12 +392,12 @@ function ProductModel({
     });
 
     if (root.current) {
-      let rotationY = -0.12;
+      let rotationY = -0.42;
       let rotationX = -0.035;
       let rotationZ = 0.012;
 
       if (section === "hero") {
-        rotationY += Math.sin(state.clock.elapsedTime * 0.22) * 0.008;
+        rotationY += Math.sin(state.clock.elapsedTime * 0.22) * 0.012;
       }
       if (section === "sound") {
         rotationY = -0.68;
@@ -409,7 +409,7 @@ function ProductModel({
         rotationX = 0.015;
       }
       if (section === "longevity") rotationY = -0.06;
-      if (section === "explore") rotationY = -0.16;
+      if (section === "explore") rotationY = -0.3;
       if (section === "customize") rotationY = 0.3;
       if (section === "purchase") rotationY = 0.42;
 
@@ -485,9 +485,9 @@ function ProductModel({
   return (
     <group
       ref={root}
-      scale={0.82}
-      position={[0, -0.09, 0]}
-      rotation={[-0.035, -0.12, 0.012]}
+      scale={0.9}
+      position={[0, -0.08, 0]}
+      rotation={[-0.03, -0.42, 0.012]}
     >
       <primitive object={model} />
     </group>
@@ -516,50 +516,50 @@ function SceneContent({
 
       <Environment resolution={512} frames={1}>
         <Lightformer
-          intensity={2.85}
+          intensity={3.4}
           position={[0, 5.5, 4]}
           scale={[7, 4.2, 1]}
         />
         <Lightformer
-          intensity={1.75}
+          intensity={2.0}
           position={[-4.5, 1.6, 2]}
           rotation={[0, Math.PI / 2, 0]}
           scale={[5, 3, 1]}
         />
         <Lightformer
-          intensity={2.1}
+          intensity={2.7}
           position={[4.5, 2.2, -1.5]}
           rotation={[0, -Math.PI / 2, 0]}
           scale={[5, 4, 1]}
         />
         <Lightformer
-          intensity={0.85}
+          intensity={1.0}
           position={[0, -3, 1.5]}
           scale={[5, 2, 1]}
         />
         <Lightformer
-          intensity={1.2}
+          intensity={1.45}
           position={[0, 2, -5]}
           rotation={[0, Math.PI, 0]}
           scale={[4, 4, 1]}
         />
       </Environment>
 
-      <ambientLight intensity={0.2} />
+      <ambientLight intensity={0.16} />
       <directionalLight
         position={[5, 7, 5]}
-        intensity={1.18}
+        intensity={1.55}
         color="#fff8ef"
         castShadow
       />
       <directionalLight
         position={[-4, 3, 2]}
-        intensity={0.5}
+        intensity={0.62}
         color="#d6c3b2"
       />
       <pointLight
         position={[0, 2, -3]}
-        intensity={0.3}
+        intensity={0.42}
         color="#b99b7e"
       />
 
@@ -569,9 +569,9 @@ function SceneContent({
 
       <ContactShadows
         position={[0, -1.0, 0]}
-        opacity={0.28}
+        opacity={0.36}
         scale={5.9}
-        blur={2.5}
+        blur={2.1}
         far={4.5}
         resolution={512}
       />
@@ -605,8 +605,8 @@ export function ProductScene({
     <Canvas
       shadows
       camera={{
-        position: [0.2, 0.58, 6.25],
-        fov: 35,
+        position: [0.18, 0.62, 5.45],
+        fov: 32,
         near: 0.1,
         far: 100,
       }}
@@ -618,7 +618,7 @@ export function ProductScene({
       }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 0.76;
+        gl.toneMappingExposure = 0.86;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
