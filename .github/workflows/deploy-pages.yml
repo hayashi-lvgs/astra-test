@@ -58,8 +58,10 @@ jobs:
           mkdir -p qa/fv
           CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
           COMMON_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader --enable-unsafe-swiftshader --disable-gpu-sandbox"
-          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/fv/fv-desktop-1440.png http://127.0.0.1:3000/astra-test/
-          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/fv/fv-mobile-390.png http://127.0.0.1:3000/astra-test/
+          curl --fail --silent http://127.0.0.1:3000/astra-test/models/lunev-one.glb > /dev/null
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-chrome --window-size=1440,1000 --virtual-time-budget=18000 --run-all-compositor-stages-before-draw --screenshot=/tmp/fv-warm.png http://127.0.0.1:3000/astra-test/
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-chrome --window-size=1440,1000 --virtual-time-budget=12000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/fv-desktop-1440.png http://127.0.0.1:3000/astra-test/
+          "$CHROME" $COMMON_FLAGS --user-data-dir=/tmp/lunev-chrome-mobile --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=18000 --run-all-compositor-stages-before-draw --screenshot=qa/fv/fv-mobile-390.png http://127.0.0.1:3000/astra-test/
 
       - name: Upload visual QA
         uses: actions/upload-artifact@v4
