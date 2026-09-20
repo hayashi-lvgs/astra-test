@@ -12,6 +12,9 @@ import {
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
+const ASSET_PREFIX = process.env.NEXT_PUBLIC_ASSET_PREFIX ?? "";
+const MODEL_URL = `${ASSET_PREFIX}/models/lunev-one.glb`;
+
 export type Finish = "graphite" | "natural" | "warm";
 export type Section =
   | "hero"
@@ -181,7 +184,7 @@ function ProductModel({
   progress: number;
 }) {
   const root = useRef<THREE.Group>(null);
-  const { scene } = useGLTF("/models/lunev-one.glb");
+  const { scene } = useGLTF(MODEL_URL);
   const palette = FINISHES[finish];
 
   const targetMetal = useMemo(
@@ -629,4 +632,4 @@ export function ProductScene({
   );
 }
 
-useGLTF.preload("/models/lunev-one.glb");
+useGLTF.preload(MODEL_URL);
