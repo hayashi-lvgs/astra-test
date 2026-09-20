@@ -33,9 +33,9 @@ export const FINISHES: Record<
 > = {
   graphite: {
     label: "Graphite",
-    metal: "#45403b",
-    cushion: "#121110",
-    trim: "#8f857b",
+    metal: "#302d2a",
+    cushion: "#11100f",
+    trim: "#756d66",
   },
   natural: {
     label: "Natural",
@@ -203,7 +203,7 @@ function ProductModel({
     () =>
       new THREE.Color(palette.metal).lerp(
         new THREE.Color(palette.trim),
-        0.27
+        0.10
       ),
     [palette.metal, palette.trim]
   );
@@ -244,12 +244,12 @@ function ProductModel({
       if (isFaceplate) {
         material = new THREE.MeshPhysicalMaterial({
           color: targetFace.clone(),
-          metalness: 0.76,
-          roughness: 0.38,
-          anisotropy: 0.78,
-          clearcoat: 0.02,
-          clearcoatRoughness: 0.48,
-          envMapIntensity: 0.92,
+          metalness: 0.56,
+          roughness: 0.54,
+          anisotropy: 0.62,
+          clearcoat: 0.01,
+          clearcoatRoughness: 0.62,
+          envMapIntensity: 0.52,
         });
       } else if (isTextile) {
         material = new THREE.MeshPhysicalMaterial({
@@ -290,18 +290,18 @@ function ProductModel({
       } else if (isTrim) {
         material = new THREE.MeshPhysicalMaterial({
           color: targetTrim.clone(),
-          metalness: 0.84,
-          roughness: 0.3,
-          anisotropy: 0.5,
-          envMapIntensity: 1.0,
+          metalness: 0.70,
+          roughness: 0.39,
+          anisotropy: 0.42,
+          envMapIntensity: 0.72,
         });
       } else {
         material = new THREE.MeshPhysicalMaterial({
           color: targetMetal.clone(),
-          metalness: 0.84,
-          roughness: 0.34,
-          anisotropy: 0.46,
-          envMapIntensity: 1.05,
+          metalness: 0.72,
+          roughness: 0.43,
+          anisotropy: 0.38,
+          envMapIntensity: 0.80,
         });
       }
 
@@ -516,50 +516,50 @@ function SceneContent({
 
       <Environment resolution={512} frames={1}>
         <Lightformer
-          intensity={3.4}
+          intensity={2.55}
           position={[0, 5.5, 4]}
           scale={[7, 4.2, 1]}
         />
         <Lightformer
-          intensity={2.0}
+          intensity={1.6}
           position={[-4.5, 1.6, 2]}
           rotation={[0, Math.PI / 2, 0]}
           scale={[5, 3, 1]}
         />
         <Lightformer
-          intensity={2.7}
+          intensity={2.05}
           position={[4.5, 2.2, -1.5]}
           rotation={[0, -Math.PI / 2, 0]}
           scale={[5, 4, 1]}
         />
         <Lightformer
-          intensity={1.0}
+          intensity={0.8}
           position={[0, -3, 1.5]}
           scale={[5, 2, 1]}
         />
         <Lightformer
-          intensity={1.45}
+          intensity={1.05}
           position={[0, 2, -5]}
           rotation={[0, Math.PI, 0]}
           scale={[4, 4, 1]}
         />
       </Environment>
 
-      <ambientLight intensity={0.16} />
+      <ambientLight intensity={0.13} />
       <directionalLight
         position={[5, 7, 5]}
-        intensity={1.55}
+        intensity={1.18}
         color="#fff8ef"
         castShadow
       />
       <directionalLight
         position={[-4, 3, 2]}
-        intensity={0.62}
+        intensity={0.48}
         color="#d6c3b2"
       />
       <pointLight
         position={[0, 2, -3]}
-        intensity={0.42}
+        intensity={0.28}
         color="#b99b7e"
       />
 
@@ -618,7 +618,7 @@ export function ProductScene({
       }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 0.86;
+        gl.toneMappingExposure = 0.70;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
