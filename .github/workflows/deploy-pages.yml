@@ -45,7 +45,10 @@ jobs:
 
       - name: Capture visual QA
         run: |
-          nohup npx --yes serve@14 out -l 3000 > /tmp/pages-serve.log 2>&1 &
+          rm -rf /tmp/lunev-pages-root
+          mkdir -p /tmp/lunev-pages-root/astra-test
+          cp -R out/. /tmp/lunev-pages-root/astra-test/
+          nohup npx --yes serve@14 /tmp/lunev-pages-root -l 3000 > /tmp/pages-serve.log 2>&1 &
           for i in {1..30}; do
             if curl --fail --silent http://127.0.0.1:3000/astra-test/ > /dev/null; then
               break
