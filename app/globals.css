@@ -93,7 +93,7 @@ button,a{-webkit-tap-highlight-color:transparent}
 }
 .product-canvas.is-interactive{pointer-events:auto}
 .product-canvas.is-hidden{opacity:0}
-.section-hero .product-canvas{transform:translate3d(25vw,2.5vh,0) scale(.90)}
+.section-hero .product-canvas{transform:translate3d(24vw,3vh,0) scale(.82)}
 .section-sound .product-canvas{transform:translate3d(22vw,0,0) scale(.96)}
 .section-silence .product-canvas{transform:translate3d(-20vw,1vh,0) scale(.92)}
 .section-material .product-canvas{transform:translate3d(20vw,1vh,0) scale(1)}
@@ -462,7 +462,7 @@ footer a{justify-self:end}
   .scroll-cue{left:22px;bottom:17px}
 
   .product-canvas{top:14vh;height:77vh}
-  .section-hero .product-canvas{transform:translate3d(3vw,18vh,0) scale(.98)}
+  .section-hero .product-canvas{transform:translate3d(1vw,25vh,0) scale(.90)}
   .section-sound .product-canvas,
   .section-material .product-canvas,
   .section-explore .product-canvas{
@@ -524,7 +524,7 @@ footer a{justify-self:end}
   .object-frame-top{left:14px;right:14px;top:13px}
   .hero-object-note{display:none}
   .product-canvas{height:73vh;top:15vh}
-  .section-hero .product-canvas{transform:translate3d(4vw,17vh,0) scale(1.06)}
+  .section-hero .product-canvas{transform:translate3d(1vw,27vh,0) scale(.88)}
   .story{padding-left:20px;padding-right:20px}
   .story-copy h2,.material-title h2{font-size:14.8vw}
   .metric-rail{margin-top:28px}
