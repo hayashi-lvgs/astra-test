@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_PROJECT_NAME: lunev-one-portfolio
+      VERCEL_PROJECT_NAME: lunev-one-portfolio-v2
 
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +38,6 @@ jobs:
       - name: Start production server
         run: |
           nohup npm run start -- -p 3000 > /tmp/lunev-next.log 2>&1 &
-          echo $! > /tmp/lunev-next.pid
           for i in {1..30}; do
             if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then
               echo "Local production server ready"
@@ -56,7 +55,6 @@ jobs:
           COMMON_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader --enable-unsafe-swiftshader --disable-gpu-sandbox"
           "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/fv/fv-desktop-1440.png http://127.0.0.1:3000/
           "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/fv/fv-mobile-390.png http://127.0.0.1:3000/
-          file qa/fv/*.png
 
       - name: Upload FV screenshots
         uses: actions/upload-artifact@v4
@@ -66,26 +64,25 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Link personal Vercel project through API
-        if: env.VERCEL_TOKEN != ''
+      - name: Resolve personal Vercel project
         run: |
           set -euo pipefail
 
-          curl -sS             -H "Authorization: Bearer $VERCEL_TOKEN"             https://api.vercel.com/v2/user > /tmp/vercel-user.json
+          curl -fsS             -H "Authorization: Bearer $VERCEL_TOKEN"             https://api.vercel.com/v2/user > /tmp/vercel-user.json
 
           USER_ID=$(node -e "const j=require('/tmp/vercel-user.json'); process.stdout.write(j.user?.id || j.user?.uid || '')")
           USERNAME=$(node -e "const j=require('/tmp/vercel-user.json'); process.stdout.write(j.user?.username || j.user?.name || '')")
           echo "Authenticated Vercel user: $USERNAME"
           test -n "$USER_ID"
 
-          STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"             -X POST             -H "Authorization: Bearer $VERCEL_TOKEN"             -H "Content-Type: application/json"             https://api.vercel.com/v11/projects             -d "{"name":"$VERCEL_PROJECT_NAME","framework":"nextjs"}")
+          VERCEL_PROJECT_NAME="$VERCEL_PROJECT_NAME" node -e "const fs=require('fs'); fs.writeFileSync('/tmp/vercel-create.json', JSON.stringify({name:process.env.VERCEL_PROJECT_NAME}))"
+
+          STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"             -X POST             -H "Authorization: Bearer $VERCEL_TOKEN"             -H "Content-Type: application/json"             --data-binary @/tmp/vercel-create.json             https://api.vercel.com/v11/projects)
 
           echo "Create project status: $STATUS"
-
           if [ "$STATUS" != "200" ] && [ "$STATUS" != "201" ]; then
-            LOOKUP_STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"               -H "Authorization: Bearer $VERCEL_TOKEN"               "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_NAME")
-            echo "Lookup project status: $LOOKUP_STATUS"
-            test "$LOOKUP_STATUS" = "200"
+            cat /tmp/vercel-project.json
+            exit 1
           fi
 
           PROJECT_ID=$(node -e "const j=require('/tmp/vercel-project.json'); process.stdout.write(j.id || '')")
@@ -93,20 +90,18 @@ jobs:
           if [ -z "$ACCOUNT_ID" ]; then ACCOUNT_ID="$USER_ID"; fi
 
           echo "Project ID resolved: $PROJECT_ID"
+          echo "Account ID resolved: $ACCOUNT_ID"
           test -n "$PROJECT_ID"
 
           mkdir -p .vercel
-          node -e "const fs=require('fs'); fs.writeFileSync('.vercel/project.json', JSON.stringify({projectId: process.env.PROJECT_ID, orgId: process.env.ACCOUNT_ID}, null, 2))"             PROJECT_ID="$PROJECT_ID" ACCOUNT_ID="$ACCOUNT_ID"
+          node -e "const fs=require('fs'); fs.writeFileSync('.vercel/project.json', JSON.stringify({projectId:process.argv[1], orgId:process.argv[2]}, null, 2))" "$PROJECT_ID" "$ACCOUNT_ID"
+          cat .vercel/project.json
 
       - name: Deploy to Vercel
-        if: env.VERCEL_TOKEN != ''
         run: |
-          PROJECT_ID=$(node -e "process.stdout.write(require('./.vercel/project.json').projectId)")
-          ORG_ID=$(node -e "process.stdout.write(require('./.vercel/project.json').orgId)")
-          echo "Deploying project $PROJECT_ID under $ORG_ID"
           npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN" | tee /tmp/vercel-deploy.log
 
       - name: Show deployment URL
-        if: env.VERCEL_TOKEN != ''
         run: |
-          grep -Eo 'https://[^ ]+\.vercel\.app' /tmp/vercel-deploy.log | tail -n 1 || true
+          echo "Production deployment:"
+          grep -Eo 'https://[^ ]+\.vercel\.app' /tmp/vercel-deploy.log | tail -n 1
