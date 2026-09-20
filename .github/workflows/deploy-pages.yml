@@ -43,6 +43,28 @@ jobs:
       - name: Build static site
         run: npm run build
 
+      - name: Capture visual QA
+        run: |
+          nohup npx --yes serve@14 out -l 3000 > /tmp/pages-serve.log 2>&1 &
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:3000/astra-test/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          mkdir -p qa/fv
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          COMMON_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage --hide-scrollbars --enable-webgl --ignore-gpu-blocklist --use-angle=swiftshader --enable-unsafe-swiftshader --disable-gpu-sandbox"
+          "$CHROME" $COMMON_FLAGS --window-size=1440,1000 --virtual-time-budget=15000 --screenshot=qa/fv/fv-desktop-1440.png http://127.0.0.1:3000/astra-test/
+          "$CHROME" $COMMON_FLAGS --window-size=390,844 --force-device-scale-factor=1 --virtual-time-budget=15000 --screenshot=qa/fv/fv-mobile-390.png http://127.0.0.1:3000/astra-test/
+
+      - name: Upload visual QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: lunev-pages-fv
+          path: qa/fv/*.png
+          retention-days: 14
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
