@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_PROJECT_NAME: lunev-one-portfolio-v2
+      VERCEL_PROJECT_NAME: lunev-one
+      VERCEL_TEAM_ID: team_aQ7QgiBFMyGISISEyGngP7Ef
 
     steps:
       - uses: actions/checkout@v4
@@ -64,38 +65,23 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-      - name: Resolve personal Vercel project
+      - name: Resolve existing Vercel project
         run: |
           set -euo pipefail
 
-          curl -fsS             -H "Authorization: Bearer $VERCEL_TOKEN"             https://api.vercel.com/v2/user > /tmp/vercel-user.json
+          STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"             -H "Authorization: Bearer $VERCEL_TOKEN"             "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_NAME?teamId=$VERCEL_TEAM_ID")
 
-          USER_ID=$(node -e "const j=require('/tmp/vercel-user.json'); process.stdout.write(j.user?.id || j.user?.uid || '')")
-          USERNAME=$(node -e "const j=require('/tmp/vercel-user.json'); process.stdout.write(j.user?.username || j.user?.name || '')")
-          echo "Authenticated Vercel user: $USERNAME"
-          test -n "$USER_ID"
-
-          VERCEL_PROJECT_NAME="$VERCEL_PROJECT_NAME" node -e "const fs=require('fs'); fs.writeFileSync('/tmp/vercel-create.json', JSON.stringify({name:process.env.VERCEL_PROJECT_NAME}))"
-
-          STATUS=$(curl -sS -o /tmp/vercel-project.json -w "%{http_code}"             -X POST             -H "Authorization: Bearer $VERCEL_TOKEN"             -H "Content-Type: application/json"             --data-binary @/tmp/vercel-create.json             https://api.vercel.com/v11/projects)
-
-          echo "Create project status: $STATUS"
-          if [ "$STATUS" != "200" ] && [ "$STATUS" != "201" ]; then
+          echo "Project lookup status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
             cat /tmp/vercel-project.json
             exit 1
           fi
 
           PROJECT_ID=$(node -e "const j=require('/tmp/vercel-project.json'); process.stdout.write(j.id || '')")
-          ACCOUNT_ID=$(node -e "const j=require('/tmp/vercel-project.json'); process.stdout.write(j.accountId || j.ownerId || '')")
-          if [ -z "$ACCOUNT_ID" ]; then ACCOUNT_ID="$USER_ID"; fi
-
-          echo "Project ID resolved: $PROJECT_ID"
-          echo "Account ID resolved: $ACCOUNT_ID"
           test -n "$PROJECT_ID"
 
           mkdir -p .vercel
-          node -e "const fs=require('fs'); fs.writeFileSync('.vercel/project.json', JSON.stringify({projectId:process.argv[1], orgId:process.argv[2]}, null, 2))" "$PROJECT_ID" "$ACCOUNT_ID"
-          cat .vercel/project.json
+          node -e "const fs=require('fs'); fs.writeFileSync('.vercel/project.json', JSON.stringify({projectId:process.argv[1], orgId:process.argv[2]}, null, 2))" "$PROJECT_ID" "$VERCEL_TEAM_ID"
 
       - name: Deploy to Vercel
         run: |
