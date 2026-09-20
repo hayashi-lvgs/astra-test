@@ -244,12 +244,12 @@ function ProductModel({
       if (isFaceplate) {
         material = new THREE.MeshPhysicalMaterial({
           color: targetFace.clone(),
-          metalness: 0.56,
-          roughness: 0.54,
-          anisotropy: 0.62,
-          clearcoat: 0.01,
-          clearcoatRoughness: 0.62,
-          envMapIntensity: 0.52,
+          metalness: 0.38,
+          roughness: 0.66,
+          anisotropy: 0.56,
+          clearcoat: 0.0,
+          clearcoatRoughness: 0.72,
+          envMapIntensity: 0.32,
         });
       } else if (isTextile) {
         material = new THREE.MeshPhysicalMaterial({
@@ -290,18 +290,18 @@ function ProductModel({
       } else if (isTrim) {
         material = new THREE.MeshPhysicalMaterial({
           color: targetTrim.clone(),
-          metalness: 0.70,
-          roughness: 0.39,
-          anisotropy: 0.42,
-          envMapIntensity: 0.72,
+          metalness: 0.56,
+          roughness: 0.48,
+          anisotropy: 0.38,
+          envMapIntensity: 0.52,
         });
       } else {
         material = new THREE.MeshPhysicalMaterial({
           color: targetMetal.clone(),
-          metalness: 0.72,
-          roughness: 0.43,
-          anisotropy: 0.38,
-          envMapIntensity: 0.80,
+          metalness: 0.62,
+          roughness: 0.5,
+          anisotropy: 0.34,
+          envMapIntensity: 0.60,
         });
       }
 
@@ -392,12 +392,12 @@ function ProductModel({
     });
 
     if (root.current) {
-      let rotationY = -0.42;
+      let rotationY = -0.50;
       let rotationX = -0.035;
       let rotationZ = 0.012;
 
       if (section === "hero") {
-        rotationY += Math.sin(state.clock.elapsedTime * 0.22) * 0.012;
+        rotationY += Math.sin(state.clock.elapsedTime * 0.18) * 0.008;
       }
       if (section === "sound") {
         rotationY = -0.68;
@@ -548,7 +548,7 @@ function SceneContent({
       <ambientLight intensity={0.13} />
       <directionalLight
         position={[5, 7, 5]}
-        intensity={1.18}
+        intensity={0.88}
         color="#fff8ef"
         castShadow
       />
